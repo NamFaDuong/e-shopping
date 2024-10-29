@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== BOXICONS ===============-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <!--=============== SWIPER CSS ===============-->
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" class="js-color-style" href="assets/css/colors/color-1.css">
+
+    <title>E-shopper</title>
+</head>
+
+<body>
+    <!--=============== HEADER ===============-->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="index.html" class="nav__logo">
+                <i class="bx bxs-shopping-bags nav__logo-icon"></i>e-shopper
+            </a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="index.html" class="nav__link">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="shop.html" class="nav__link  active-link">
+                            shop
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="about.html" class="nav__link">
+                            About
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="blog.html" class="nav__link">
+                            Blog
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="faq.html" class="nav__link">
+                            Faq's
+                        </a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="contact.html" class="nav__link">
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+                <div class="nav__close" id="nav-close">
+                    <i class="bx bx-x"></i>
+                </div>
+            </div>
+            <div class="nav__btns">
+                <div class="user__toggle" id="user-toggle">
+                    <i class="bx bx-user"></i>
+                </div>
+                <div class="nav__shop" id="cart-shop">
+                    <i class="bx bxs-shopping-bags"></i>
+                </div>
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="bx bx-grid-alt"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!--=============== CART ===============-->
+    <div class="cart " id="cart">
+        <i class="bx bx-x cart__close" id="cart-close"></i>
+        <h2 class="cart__title-center">My Cart</h2>
+        <div class="cart__container">
+            <article class="cart__card">
+                <div class="cart__box">
+                    <img src="assets/img/cart-1.png" alt="" class="cart__img">
+                </div>
+                <div class="cart__details">
+                    <h3 class="cart__title">Windbreaker</h3>
+                    <span class="cart__price">$12.5</span>
+
+                    <div class="cart__amount">
+                        <div class="cart__amount-content">
+                            <span class="cart__amount-box">
+                                <i class="bx bx-minus"></i>
+                            </span>
+                            <span class="cart__amount-number">1</span>
+                            <span class="cart__amount-box">
+                                <i class="bx bx-plus"></i>
+                            </span>
+                        </div>
+                        <i class="bx bx-trash-alt cart__amount-trash"></i>
+                    </div>
+                </div>
+            </article>
+            <article class="cart__card">
+                <div class="cart__box">
+                    <img src="assets/img/cart-2.png" alt="" class="cart__img">
+                </div>
+                <div class="cart__details">
+                    <h3 class="cart__title">Cadigan Hoodia</h3>
+                    <span class="cart__price">$15</span>
+
+                    <div class="cart__amount">
+                        <div class="cart__amount-content">
+                            <span class="cart__amount-box">
+                                <i class="bx bx-minus"></i>
+                            </span>
+                            <span class="cart__amount-number">1</span>
+                            <span class="cart__amount-box">
+                                <i class="bx bx-plus"></i>
+                            </span>
+                        </div>
+                        <i class="bx bx-trash-alt cart__amount-trash"></i>
+                    </div>
+                </div>
+            </article>
+            <article class="cart__card">
+                <div class="cart__box">
+                    <img src="assets/img/cart-3.png" alt="" class="cart__img">
+                </div>
+                <div class="cart__details">
+                    <h3 class="cart__title">Cartoon</h3>
+                    <span class="cart__price">$10</span>
+
+                    <div class="cart__amount">
+                        <div class="cart__amount-content">
+                            <span class="cart__amount-box">
+                                <i class="bx bx-minus"></i>
+                            </span>
+                            <span class="cart__amount-number">1</span>
+                            <span class="cart__amount-box">
+                                <i class="bx bx-plus"></i>
+                            </span>
+                        </div>
+                        <i class="bx bx-trash-alt cart__amount-trash"></i>
+                    </div>
+                </div>
+            </article>
+            <article class="cart__card">
+                <div class="cart__box">
+                    <img src="assets/img/cart-3.png" alt="" class="cart__img">
+                </div>
+                <div class="cart__details">
+                    <h3 class="cart__title">Cartoon</h3>
+                    <span class="cart__price">$10</span>
+
+                    <div class="cart__amount">
+                        <div class="cart__amount-content">
+                            <span class="cart__amount-box">
+                                <i class="bx bx-minus"></i>
+                            </span>
+                            <span class="cart__amount-number">1</span>
+                            <span class="cart__amount-box">
+                                <i class="bx bx-plus"></i>
+                            </span>
+                        </div>
+                        <i class="bx bx-trash-alt cart__amount-trash"></i>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="cart__prices">
+            <span class="cart__price-item">3 item</span>
+            <span class="cart__price-total">28$</span>
+        </div>
+    </div>
+
+    <!--=============== user ===============-->
+    <div class="user" id="user">
+        <i class="bx bx-x user__close" id="user-close"></i>
+        <h2 class="user__title-center">user</h2>
+        <form action="" method="post" class="user__form grid">
+            <div class="user__content">
+                <label for="email" class="user__label">Email</label>
+                <input type="email" name="email" id="email" class="user__input">
+            </div>
+            <div class="user__content">
+                <label for="password" class="user__label">Password</label>
+                <input type="password" name="password" id="password" class="user__input">
+            </div>
+
+            <div class="">
+                <a href="#" class="button">Sign in</a>
+            </div>
+            <div class="">
+                <p class="signup">Not a member? <a href="registration.html" class="">Sign up new</a></p>
+            </div>
+        </form>
+    </div>
+
+    <!--=============== MAIN ===============-->
+    <main class="main">
+        <!--=============== SHOP ===============-->
+        <section class="shop section container">
+            <h2 class="breadcrumb__title">Shop Page</h2>
+            <h3 class="breadcrumb__subtitle">Home > <span>Shop</span></h3>
+
+            <div class="shop__container grid">
+                <div class="sidebar">
+                    <h3 class="filter__title">Select filters</h3>
+                    <div class="filter__content">
+                        <h3 class="filter__subtitle">Condition</h3>
+
+                        <div class="filter__content">
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>New</p><span>(13)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Sale</p><span>(13)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter__content">
+                        <h3 class="filter__subtitle">Size</h3>
+
+                        <div class="filter__content">
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>S</p><span>(13)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>M</p><span>(15)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>L</p><span>(6)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter__content">
+                        <h3 class="filter__subtitle">Categories</h3>
+
+                        <div class="filter__content">
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Men</p><span>(2)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Women</p><span>(4)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Kids</p><span>(6)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Others</p><span>(4)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter__content">
+                        <h3 class="filter__subtitle">Styles</h3>
+
+                        <div class="filter__content">
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Casual</p><span>(2)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Dressy</p><span>(4)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Girly</p><span>(6)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter__content">
+                        <h3 class="filter__subtitle">Sub Categories</h3>
+
+                        <div class="filter__content">
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Jackets</p><span>(2)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>T-shirts</p><span>(4)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Accessories</p><span>(6)</span>
+                            </div>
+                            <div class="filter">
+                                <input type="checkbox" name="" id="">
+                                <p>Shoes</p><span>(4)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="shop__items grid">
+                    <div class="shop__content">
+                        <div class="shop__tag">New</div>
+                        <img src="assets/img/product-1.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Cartoon Jackets</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$14.99</span>
+                            <span class="shop__discounts">$29.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                    <div class="shop__content">
+                        <div class="shop__tag">Sale</div>
+                        <img src="assets/img/product-2.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Clothing Hat Coat</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$11.99</span>
+                            <span class="shop__discounts">$21.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                    <div class="shop__content">
+                        <div class="shop__tag">Sale</div>
+                        <img src="assets/img/product-3.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Fur Jackets</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$15.99</span>
+                            <span class="shop__discounts">$30.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                    <div class="shop__content">
+                        <div class="shop__tag">New</div>
+                        <img src="assets/img/product-4.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Fleece Jackets</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$7.99</span>
+                            <span class="shop__discounts">$14.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                    <div class="shop__content">
+                        <div class="shop__tag">New</div>
+                        <img src="assets/img/product-5.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Windbreaker Jackets</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$7.99</span>
+                            <span class="shop__discounts">$14.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                    <div class="shop__content">
+                        <div class="shop__tag">Sale</div>
+                        <img src="assets/img/product-6.png" alt="image" class="shop__img">
+                        <h3 class="shop__title">Adidas tracksuit</h3>
+                        <span class="shop__subtitle">Accessory</span>
+                        <div class="shop__prices">
+                            <span class="shop__price">$14.99</span>
+                            <span class="shop__discounts">$29.99</span>
+                        </div>
+
+                        <a href="details.html" class="button shop__button">
+                            <i class="bx bx-cart-alt shop__icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination">
+                <div class="bx bx-chevron-left pagination__icon"></div>
+                <span class="current active-pagination">1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>&middot; &middot; &middot;</span>
+                <span>9</span>
+                <i class="bx bx-chevron-right pagination__icon"></i>
+            </div>
+        </section>
+    </main>
+
+
+    <!--=============== FOOTER ===============-->
+    <footer class="footer section">
+        <div class="footer__container container grid">
+            <!-- FOOTER CONTENT 1 -->
+            <div class="footer__content">
+                <a href="#" class="footer__logo">
+                    <i class="bx bxs-shopping-bags footer__logo-icon"></i> e-shopper
+                </a>
+                <p class="footer__description">
+                    Enjoy the biggest sale <br> of your life.
+                </p>
+                <div class="footer__social">
+                    <a href="#" class="footer__social-link"><i class="bx bxl-facebook"></i></a>
+                    <a href="#" class="footer__social-link"><i class="bx bxl-instagram-alt"></i></a>
+                    <a href="#" class="footer__social-link"><i class="bx bxl-twitter"></i></a>
+                </div>
+            </div>
+
+            <!-- FOOTER CONTENT 2 -->
+            <div class="footer__content">
+                <div class="footer__title">About</div>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__links">About us</a></li>
+                    <li><a href="#" class="footer__links">Customer support</a></li>
+                    <li><a href="#" class="footer__links">Support Center</a></li>
+                </ul>
+            </div>
+            <!-- FOOTER CONTENT 3 -->
+            <div class="footer__content">
+                <div class="footer__title">Our Service</div>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__links">Shop</a></li>
+                    <li><a href="#" class="footer__links">Discounts</a></li>
+                    <li><a href="#" class="footer__links">Shipping mode</a></li>
+                </ul>
+            </div>
+            <!-- FOOTER CONTENT 4 -->
+            <div class="footer__content">
+                <div class="footer__title">Our Company</div>
+                <ul class="footer__links">
+                    <li><a href="#" class="footer__links">Register</a></li>
+                    <li><a href="#" class="footer__links">Contact us</a></li>
+                    <li><a href="about.html" class="footer__links">About Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <span class="footer__copy">&#169; DUONG <span style="color: gold;">NAMFA</span>. All right reserve</span>
+    </footer>
+
+    <!--=============== SCROLL UP ===============-->
+    <a href="#" class="scrollup" id="scroll-up">
+        <i class="bx bx-up-arrow-alt scrollup__icon"></i>
+    </a>
+    <!--=============== STYLE SWITCHER ===============-->
+    <div class="style__switcher">
+        <div class="style__switcher-toggler s__icon">
+            <i class="bx bx-cog bx-spin"></i>
+        </div>
+        <h4>Theme Colors</h4>
+        <div class="theme__colors js-theme-colors">
+            <button type="button" data-js-theme-color="color-1"
+                class="js-theme-color-item active theme__button color-1">
+                <i class="bx bx-check"></i>
+            </button>
+            <button type="button" data-js-theme-color="color-2" class="js-theme-color-item theme__button color-2">
+                <i class="bx bx-check"></i>
+            </button>
+            <button type="button" data-js-theme-color="color-3" class="js-theme-color-item theme__button color-3">
+                <i class="bx bx-check"></i>
+            </button>
+            <button type="button" data-js-theme-color="color-4" class="js-theme-color-item theme__button color-4">
+                <i class="bx bx-check"></i>
+            </button>
+            <button type="button" data-js-theme-color="color-5" class="js-theme-color-item theme__button color-5">
+                <i class="bx bx-check"></i>
+            </button>
+        </div>
+    </div>
+    <!--=============== SWIPER JS ===============-->
+    <script src="assets/js/swiper-bundle.min.js"></script>
+
+    <!--=============== JS ===============-->
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

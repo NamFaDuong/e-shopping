@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== BOXICONS ===============-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <!--=============== SWIPER CSS ===============-->
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/colors/color-1.css">
+    <style>
+        /* Center the registration form */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--body-color);
+        }
+
+        /*=============== Registration ===============*/
+        .registration {
+            background-color: var(--body-color);
+            z-index: var(--z-fixed);
+            box-shadow: 2px 1px 10px var(--shadow);
+            padding: 3.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 25px;
+        }
+
+        .registration__title-center {
+            font-size: var(--h2-font-size);
+            text-align: center;
+            margin-bottom: var(--mb-3);
+        }
+
+        .registration__form {
+            display: flex;
+            flex-direction: column;
+            row-gap: 1.25rem;
+        }
+
+        .registration__content {
+            background: var(--container-color);
+            border-radius: .5rem;
+            padding: .75rem 1rem .25rem;
+            width: 100%;
+        }
+
+        .registration__label {
+            font-size: var(--small-font-size);
+            color: var(--title-color);
+        }
+
+        .registration__input {
+            width: 100%;
+            background: var(--container-color);
+            color: var(--title-color);
+            font-size: var(--normal-font-size);
+            padding: .25rem .5rem .25rem 0;
+        }
+
+        .btnregistration {
+            text-align: center;
+        }
+
+        .signup {
+            color: var(--title-color);
+            font-size: var(--small-font-size);
+            font-weight: var(--font-medium);
+            text-align: center;
+        }
+
+        .signup a {
+            color: var(--first-color);
+        }
+    </style>
+    <title>E-shopper</title>
+</head>
+
+<body>
+    <!--=============== MAIN ===============-->
+    <main class="main">
+        <!--=============== REGISTRATION ===============-->
+        <div class="registration" id="registration">
+            <h2 class="registration__title-center">Registration</h2>
+            <form action="" method="post" class="registration__form">
+                <div class="registration__content">
+                    <label for="email" class="registration__label">Email</label>
+                    <input type="email" name="email" id="email" class="registration__input">
+                </div>
+                <div class="registration__content">
+                    <label for="password" class="registration__label">Password</label>
+                    <input type="password" name="password" id="password" class="registration__input">
+                </div>
+                <div class="registration__content">
+                    <label for="confirmpassword" class="registration__label">Confirm Password</label>
+                    <input type="password" name="confirmpassword" id="confirmpassword" class="registration__input">
+                </div>
+
+                <div class="btnregistration">
+                    <button type="submit" class="button">Registrater</button>
+                </div>
+                <div class="signup">
+                    <p>have account to sign in? <a href="login.html">Sign in</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!--=============== SWIPER JS ===============-->
+    <script src="assets/js/swiper-bundle.min.js"></script>
+
+    <!--=============== JS ===============-->
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
