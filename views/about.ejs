@@ -1,0 +1,155 @@
+<%- include("template/header.ejs") -%>
+
+    <body>
+        <!--=============== HEADER ===============-->
+        <%- include("navigation.ejs") -%>
+
+            <!--=============== CART ===============-->
+            <!-- show-cart -->
+            <div class="cart " id="cart">
+                <i class="bx bx-x cart__close" id="cart-close"></i>
+                <h2 class="cart__title-center">My Cart</h2>
+                <div class="cart__container">
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="/img/cart-1.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Windbreaker</h3>
+                            <span class="cart__price">$12.5</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="/img/cart-2.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cadigan Hoodia</h3>
+                            <span class="cart__price">$15</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="cart__prices">
+                    <span class="cart__price-item">3 item</span>
+                    <span class="cart__price-total">28$</span>
+                </div>
+            </div>
+
+            <!--=============== user ===============-->
+            <%- include("template/user_card.ejs") -%>
+
+
+                <!--=============== MAIN ===============-->
+                <main class="main">
+                    <!--=============== ABOUT ===============-->
+                    <section class="about section container">
+                        <h2 class="breadcrumb__title">About Page</h2>
+                        <h3 class="breadcrumb__subtitle">Home > <span>About</span></h3>
+                        <div class="about__container grid">
+                            <img src="/img/about-img.jpg" alt="image" class="about__img">
+
+                            <div class="about__data">
+                                <h2 class="section__titile about__title">
+                                    Who we really are & <br> why choose us
+                                </h2>
+                                <p class="about__description">
+                                    We have over 4000+ unbiased reviews and our customer trust our products and delivery
+                                    service
+                                    every time.
+                                </p>
+                                <div class="about__details">
+                                    <p class="about__details-description">
+                                        <i class="bx bxs-check-square about__details-icon"></i>
+                                        We always deliver on time.
+                                    </p>
+                                    <p class="about__details-description">
+                                        <i class="bx bxs-check-square about__details-icon"></i>
+                                        We give you guides to protect and care for your products.
+                                    </p>
+                                    <p class="about__details-description">
+                                        <i class="bx bxs-check-square about__details-icon"></i>
+                                        100% money back guaranted.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                </main>
+
+                <!--=============== FOOTER ===============-->
+                <%- include("footer.ejs") -%>
+                    <%- include("template/link_footer.ejs") -%>
+    </body>
+
+    </html>

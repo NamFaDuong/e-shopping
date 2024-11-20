@@ -1,0 +1,36 @@
+<div class="user" id="user">
+    <i class="bx bx-x user__close" id="user-close"></i>
+    <h2 class="user__title-center">Hello welcome back!</h2>
+    <div class="profile"
+        style="width: 5rem; height: 5rem;justify-content: center;margin: auto;border-radius: 50px;overflow: hidden;">
+        <img src="/img/no_Image.jpg" alt="">
+    </div>
+    <%if(global.user) {%>
+        <h2 class="user__title-center">
+            <%=global.user%>
+        </h2>
+        <%}%>
+            <div class="contect__information" style="margin: auto;text-align: center;justify-content: space-between;">
+                <a href="#">
+                    <i class='bx bxl-facebook-circle bx-md' style="color: blue;"></i>
+                </a>
+                <a href="#">
+                    <i class='bx bxl-instagram-alt bx-md' style="color: rgb(236, 3, 81);"></i>
+                </a>
+                <a href="#">
+                    <i class='bx bxl-twitter bx-md' style="color: rgb(0, 161, 224);"></i>
+                </a>
+            </div>
+            <div class="" style="text-align: center;">
+                <% if(global.user==="Guests" ) {%>
+                    <button class="button" id="btnlogin">
+                        <a href="/login" style="color: white;">Sign in</a>
+                    </button>
+                    <% }else{%>
+                        <br>
+                        <button class="button" id="btnlogin" style="background-color: blue;">
+                            <a href="/login" style="color: white;">Sign out</a>
+                        </button>
+                        <% }%>
+            </div>
+</div>

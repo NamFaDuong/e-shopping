@@ -1,0 +1,179 @@
+<%- include("template/header.ejs") -%>
+
+    <body>
+        <!--=============== HEADER ===============-->
+        <%- include("navigation.ejs") -%>
+
+            <!--=============== CART ===============-->
+            <!-- show-cart -->
+            <div class="cart " id="cart">
+                <i class="bx bx-x cart__close" id="cart-close"></i>
+                <h2 class="cart__title-center">My Cart</h2>
+                <div class="cart__container">
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="assets/img/cart-1.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Windbreaker</h3>
+                            <span class="cart__price">$12.5</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="assets/img/cart-2.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cadigan Hoodia</h3>
+                            <span class="cart__price">$15</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="assets/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="assets/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="cart__prices">
+                    <span class="cart__price-item">3 item</span>
+                    <span class="cart__price-total">28$</span>
+                </div>
+            </div>
+
+            <!--=============== user ===============-->
+            <%- include("template/user_card.ejs") -%>
+
+
+                <!--=============== MAIN ===============-->
+                <main class="main">
+                    <!--=============== CONTACT US ===============-->
+                    <section class="contact section container">
+                        <h2 class="breadcrumb__title">Contact page</h2>
+                        <h3 class="breadcrumb__subtitle">Home > <span>Contact us</span></h3>
+
+                        <div class="contact__container grid">
+                            <div class="">
+                                <div class="contact__information">
+                                    <i class="bx bx-phone contact__icon"></i>
+                                    <div class="">
+                                        <h3 class="contact__title">Call Me</h3>
+                                        <span class="contact__subtitle">+855 99-987-9874</span>
+                                    </div>
+                                </div>
+                                <div class="contact__information">
+                                    <i class="bx bx-envelope contact__icon"></i>
+                                    <div class="">
+                                        <h3 class="contact__title">Gmail</h3>
+                                        <span class="contact__subtitle">e_shopper@gmail.com</span>
+                                    </div>
+                                </div>
+                                <div class="contact__information">
+                                    <i class="bx bx-map contact__icon"></i>
+                                    <div class="">
+                                        <h3 class="contact__title">Location</h3>
+                                        <span class="contact__subtitle">No. 86A, Street 110, Russian Federation Blvd
+                                            (110),
+                                            Phnom
+                                            Penh</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <form action="" method="post" class="contact__form grid">
+                                <div class="contact__inputs grid">
+                                    <div class="contact__content">
+                                        <label for="name" class="contact__label">Name</label>
+                                        <input type="text" name="name" id="name" class="contact__input">
+                                    </div>
+                                    <div class="contact__content">
+                                        <label for="gmail" class="contact__label">Gmail</label>
+                                        <input type="text" name="gmail" id="gmail" class="contact__input">
+                                    </div>
+                                </div>
+                                <div class="contact__content">
+                                    <label for="subject" class="contact__label">Subject</label>
+                                    <input type="text" name="subject" id="subject" class="contact__input">
+                                </div>
+                                <div class="contact__content">
+                                    <label for="message" class="contact__label">Message</label>
+                                    <textarea name="message" id="message" class="contact__input" rows="7"
+                                        cols="0"></textarea>
+                                </div>
+                                <div class="">
+                                    <a href="#" class="button">Send Message</a>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </main>
+
+                <!--=============== FOOTER ===============-->
+                <%- include("footer.ejs") -%>
+                    <%- include("template/link_footer.ejs") -%>
+    </body>
+
+    </html>

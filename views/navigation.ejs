@@ -1,0 +1,56 @@
+<header class="header" id="header">
+    <nav class="nav container">
+        <a href="/home" class="nav__logo">
+            <i class="bx bxs-shopping-bags nav__logo-icon"></i>e-shopper
+        </a>
+        <div class="nav__menu" id="nav-menu">
+            <ul class="nav__list">
+                <li class="nav__item">
+                    <a href="/home" class="nav__link <% if (global.active_link === 'home') { %> active-link <% } %>">
+                        Home
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="/shop" class="nav__link <% if (global.active_link === 'shop') { %> active-link <% } %>">
+                        shop
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="/about" class="nav__link <% if (global.active_link === 'about') { %> active-link <% } %>">
+                        About
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="/blog" class="nav__link <% if (global.active_link === 'blog') { %> active-link <% } %>">
+                        Blog
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="/faq" class="nav__link <% if (global.active_link === 'faq') { %> active-link <% } %>">
+                        Faq's
+                    </a>
+                </li>
+                <li class="nav__item">
+                    <a href="/contact"
+                        class="nav__link <% if (global.active_link === 'contact') { %> active-link <% } %>">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+            <div class="nav__close" id="nav-close">
+                <i class="bx bx-x"></i>
+            </div>
+        </div>
+        <div class="nav__btns">
+            <div class="user__toggle" id="user-toggle">
+                <i class="bx bx-user"></i>
+            </div>
+            <div class="nav__shop" id="cart-shop">
+                <i class="bx bxs-shopping-bags"></i>
+            </div>
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="bx bx-grid-alt"></i>
+            </div>
+        </div>
+    </nav>
+</header>

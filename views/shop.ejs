@@ -1,0 +1,326 @@
+<%- include("template/header.ejs") -%>
+
+    <body>
+        <!--=============== HEADER ===============-->
+        <%- include("navigation.ejs") -%>
+
+            <!--=============== CART ===============-->
+            <div class="cart " id="cart">
+                <i class="bx bx-x cart__close" id="cart-close"></i>
+                <h2 class="cart__title-center">My Cart</h2>
+                <div class="cart__container">
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="../public/img/cart-1.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Windbreaker</h3>
+                            <span class="cart__price">$12.5</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="../public/img/cart-2.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cadigan Hoodia</h3>
+                            <span class="cart__price">$15</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="../public/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="cart__card">
+                        <div class="cart__box">
+                            <img src="../public/img/cart-3.png" alt="" class="cart__img">
+                        </div>
+                        <div class="cart__details">
+                            <h3 class="cart__title">Cartoon</h3>
+                            <span class="cart__price">$10</span>
+
+                            <div class="cart__amount">
+                                <div class="cart__amount-content">
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-minus"></i>
+                                    </span>
+                                    <span class="cart__amount-number">1</span>
+                                    <span class="cart__amount-box">
+                                        <i class="bx bx-plus"></i>
+                                    </span>
+                                </div>
+                                <i class="bx bx-trash-alt cart__amount-trash"></i>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="cart__prices">
+                    <span class="cart__price-item">3 item</span>
+                    <span class="cart__price-total">28$</span>
+                </div>
+            </div>
+
+            <!--=============== user ===============-->
+            <%- include("template/user_card.ejs") -%>
+
+                <!--=============== MAIN ===============-->
+                <main class="main" id="app">
+                    <!--=============== SHOP ===============-->
+                    <section class="shop section container">
+                        <h2 class="breadcrumb__title">Shop Page</h2>
+                        <h3 class="breadcrumb__subtitle">Home > <span>Shop</span></h3>
+
+                        <div class="shop__container grid">
+                            <div class="sidebar">
+                                <h3 class="filter__title">Select filters</h3>
+                                <div class="filter__content">
+                                    <h3 class="filter__subtitle">Condition</h3>
+
+                                    <div class="filter__content">
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>New</p><span>(13)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Sale</p><span>(13)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter__content">
+                                    <h3 class="filter__subtitle">Size</h3>
+
+                                    <div class="filter__content">
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>S</p><span>(13)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>M</p><span>(15)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>L</p><span>(6)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter__content">
+                                    <h3 class="filter__subtitle">Categories</h3>
+
+                                    <div class="filter__content">
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Men</p><span>(2)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Women</p><span>(4)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Kids</p><span>(6)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Others</p><span>(4)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter__content">
+                                    <h3 class="filter__subtitle">Styles</h3>
+
+                                    <div class="filter__content">
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Casual</p><span>(2)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Dressy</p><span>(4)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Girly</p><span>(6)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="filter__content">
+                                    <h3 class="filter__subtitle">Sub Categories</h3>
+
+                                    <div class="filter__content">
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Jackets</p><span>(2)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>T-shirts</p><span>(4)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Accessories</p><span>(6)</span>
+                                        </div>
+                                        <div class="filter">
+                                            <input type="checkbox" name="" id="">
+                                            <p>Shoes</p><span>(4)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="shop__items grid">
+                                <div class="shop__content">
+                                    <div class="shop__tag">New</div>
+                                    <img src="/img/product-1.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Cartoon Jackets</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$14.99</span>
+                                        <span class="shop__discounts">$29.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                                <div class="shop__content">
+                                    <div class="shop__tag">Sale</div>
+                                    <img src="img/product-2.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Clothing Hat Coat</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$11.99</span>
+                                        <span class="shop__discounts">$21.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                                <div class="shop__content">
+                                    <div class="shop__tag">Sale</div>
+                                    <img src="/img/product-3.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Fur Jackets</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$15.99</span>
+                                        <span class="shop__discounts">$30.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                                <div class="shop__content">
+                                    <div class="shop__tag">New</div>
+                                    <img src="/img/product-4.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Fleece Jackets</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$7.99</span>
+                                        <span class="shop__discounts">$14.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                                <div class="shop__content">
+                                    <div class="shop__tag">New</div>
+                                    <img src="/img/product-5.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Windbreaker Jackets</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$7.99</span>
+                                        <span class="shop__discounts">$14.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                                <div class="shop__content">
+                                    <div class="shop__tag">Sale</div>
+                                    <img src="/img/product-6.png" alt="image" class="shop__img">
+                                    <h3 class="shop__title">Adidas tracksuit</h3>
+                                    <span class="shop__subtitle">Accessory</span>
+                                    <div class="shop__prices">
+                                        <span class="shop__price">$14.99</span>
+                                        <span class="shop__discounts">$29.99</span>
+                                    </div>
+
+                                    <a href="/details" class="button shop__button">
+                                        <i class="bx bx-cart-alt shop__icon"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination">
+                            <div class="bx bx-chevron-left pagination__icon"></div>
+                            <span class="current active-pagination">1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>&middot; &middot; &middot;</span>
+                            <span>9</span>
+                            <i class="bx bx-chevron-right pagination__icon"></i>
+                        </div>
+                    </section>
+                    <%- data -%>
+                </main>
+
+
+                <!--=============== FOOTER ===============-->
+                <%- include("footer.ejs") -%>
+                    <%- include("template/link_footer.ejs") -%>
+    </body>
+
+    </html>
