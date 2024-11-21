@@ -551,6 +551,7 @@ input {
     border-radius: 1rem;
     text-align: center;
     overflow: hidden;
+    max-height: fit-content;
 }
 .shop__img{
     width: 150px;

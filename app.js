@@ -1,26 +1,33 @@
 import dotenv from 'dotenv';
-import express, { Router } from 'express'
+import express from 'express'
 import bodyParser from 'body-parser';
 import mysql from 'mysql'
 import bcrypt, { hash } from 'bcrypt'
-
+// import cors from 'cors';
 dotenv.config();
 
 const app = express();
+// app.use(cors());
 const saltRound = 10;
 app.use(express.static("public"))
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const connection = new mysql.createConnection({
+const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
 });
 
-connection.connect();
+connection.connect(err => {
+    if (err) {
+        console.error('Database connection failed:', err);
+        process.exit(1);
+    }
+    console.log('Connected to MySQL database.');
+});
 
 global.user = 'Guests';
 app.get("/login", (req, res) => {
@@ -178,17 +185,7 @@ app.get(["/", "/home", "/Home"], (req, res) => {
 });
 app.get("/shop", checkAuth, (req, res) => {
     global.active_link = "shop";
-
-    connection.query("Select * from products", (error, result) => {
-        if (error) {
-            console.log("Error selecting", error);
-        } else {
-            if (result) {
-                const data = JSON.stringify(result);
-                res.render("../views/shop.ejs", { data: data });
-            }
-        }
-    });
+    res.render("../views/shop.ejs");
 
 });
 app.get("/about", checkAuth, (req, res) => {
@@ -212,18 +209,87 @@ app.get("/faq", checkAuth, (req, res) => {
     res.render("../views/faq.ejs");
 });
 
-// Error 404
-app.get('*', function (req, res) {
-    res.render("../views/error/404.ejs");
+
+
+
+//API ENDPOINT
+
+//Get Product
+app.get('/api/products', (req, res) => {
+    connection.query('Select * from products', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+//Get Category
+app.get('/api/category', (req, res) => {
+    connection.query('Select * from categories', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+//Get condition
+app.get('/api/conditon', (req, res) => {
+    connection.query('Select * from conditions', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+//Get size
+app.get('/api/size', (req, res) => {
+    connection.query('Select * from sizes', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+//Get style
+app.get('/api/style', (req, res) => {
+    connection.query('Select * from styles', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+//Get subcategory
+app.get('/api/subcategory', (req, res) => {
+    connection.query('Select * from subcategory', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
 });
 
 
 
 
 
-
-
-
+// Error 404
+app.get('*', function (req, res) {
+    res.render("../views/error/404.ejs");
+});
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
