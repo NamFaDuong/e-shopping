@@ -33,14 +33,40 @@
                     </div>
                     <div class="cart__prices" v-if="count_cartlist !=0">
                         <span class="cart__price-item">{{ count_cartlist }} item</span>
-                        <span class="cart__price-total">{{ total_price }}$</span>
+                        <span class="cart__price-total">{{ total_price.toFixed(2) }}$</span>
                     </div>
-                    <div class="payment_input" v-if="count_cartlist !=0">
-                        <input type="number" name="payment_price" id="payment_price" placeholder="0">
+
+
+                    <div class="payment_input" v-if="count_cartlist !=0"
+                        style="display: flex;justify-content: space-between;">
+                        <span>Promotion : %</span>
+                        <input type="number" style="display: block;text-align: end;max-width: 100px;margin-bottom: 2px;"
+                            name="promotion" id="promotion" v-model="promotion" @input="discount()">
                     </div>
+
+                    <div class="payment_input" v-if="count_cartlist !=0"
+                        style="display: flex;justify-content: space-between;">
+                        <span>Payment : $</span>
+                        <input type="number" style="display: block;text-align: end;max-width: 100px;margin-bottom: 2px;"
+                            name="payment_price" id="payment_price" v-model="payment_amount"
+                            @input="calculateReturn_price()">
+                    </div>
+
+
+                    <div class="payment_input" v-if="count_cartlist !=0"
+                        style="display: flex;justify-content: space-between;">
+                        <span>Grand Total: </span>
+                        <span>${{ grand_total.toFixed(2) }}</span>
+                    </div>
+
+                    <div class="payment_input" v-if="count_cartlist !=0"
+                        style="display: flex;justify-content: space-between;">
+                        <span style="color: red;">Return Money: ${{ return_price.toFixed(2) }} </span>
+                    </div>
+
                     <div class="paymentbutton" style="display: block; text-align: end;padding-top: 1rem;"
                         v-if="count_cartlist !=0">
-                        <a href="/details" type="button" class="button" @click="payment()">Payment</a>
+                        <a href="#" type="button" class="button" @click="payment()">Payment</a>
                     </div>
                 </div>
 
@@ -361,10 +387,23 @@
                                 category_filter: [],
                                 cart_list: [],
                                 count_cartlist: 0,
-                                total_price: 0
+                                total_price: 0,
+                                payment_amount: 0,
+                                promotion: 0,
+                                grand_total: 0,
+                                return_price: 0,
                             };
                         },
                         methods: {
+                            clearInfor() {
+                                this.cart_list = [],
+                                    this.count_cartlist = 0,
+                                    this.total_price = 0,
+                                    this.payment_amount = 0,
+                                    this.promotion = 0,
+                                    this.grand_total = 0,
+                                    this.return_price = 0
+                            },
                             getProducts() {
                                 fetch('http://localhost:3000/api/products')
                                     .then(response => {
@@ -551,6 +590,7 @@
                                 }
                                 vm.count_cartlist = vm.cart_list.length;
                                 vm.calculate_price();
+
                             },
                             delete_item(index_item) {
                                 this.cart_list.splice(index_item, 1);
@@ -562,18 +602,49 @@
                                     let sub_total = (parseFloat(obj.qty) * parseFloat(obj.price)) - (parseFloat(obj.qty) * parseFloat(obj.price)) * (parseFloat(obj.discount) / 100);
                                     this.total_price += sub_total;
                                 })
-                                this.total_price = this.total_price.toFixed(2);
+                                this.grand_total = this.total_price;
+                                this.calculateReturn_price();
+                            },
+                            discount() {
+                                this.grand_total = this.total_price - (this.total_price * this.promotion) / 100
+                                this.calculateReturn_price();
+                            },
+                            calculateReturn_price() {
+                                this.return_price = 0
+                                this.return_price = this.payment_amount - this.grand_total
                             },
                             payment() {
-                                try {
-                                    const response = axios.post('http://localhost:3000/api/payment', {
-                                        cart_list: this.cart_list,
-                                        total_price: this.total_price
-                                    });
-                                    // Handle the response from Node.js
-                                    this.responseMessage = response.data.message;
-                                } catch (error) {
-                                    console.error('There was an error!', error);
+                                if (this.cart_list.length != 0) {
+                                    console.log(this.payment_amount)
+                                    console.log(this.grand_total.toFixed(2))
+
+                                    if (parseFloat(this.payment_amount) >= parseFloat(this.grand_total.toFixed(2))) {
+                                        try {
+                                            const response = axios.post('http://localhost:3000/api/payment', {
+                                                cart_list: this.cart_list,
+                                                total_price: this.total_price,
+                                                discount: this.promotion
+                                            });
+                                            // Handle the response from Node.js
+                                            this.responseMessage = response.data;
+                                            Swal.fire({
+                                                icon: "success",
+                                                title: "Order Success",
+                                                showConfirmButton: false
+                                            });
+                                            this.clearInfor();
+
+                                        } catch (error) {
+                                            console.error('There was an error!', error);
+                                        }
+                                    } else {
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Error",
+                                            text: "Please add more money",
+                                        });
+                                        return
+                                    }
                                 }
                             },
                         },

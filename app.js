@@ -3,6 +3,9 @@ import express, { query } from 'express'
 import bodyParser from 'body-parser';
 import mysql from 'mysql'
 import bcrypt, { hash } from 'bcrypt'
+import axios from 'axios';
+
+
 // import cors from 'cors';
 dotenv.config();
 
@@ -190,11 +193,11 @@ app.get("/shop", checkAuth, (req, res) => {
     res.render("../views/shop.ejs");
 
 });
-app.get("/about", checkAuth, (req, res) => {
+app.get("/about", (req, res) => {
     global.active_link = "about";
     res.render("../views/about.ejs");
 });
-app.get("/blog", checkAuth, (req, res) => {
+app.get("/blog", (req, res) => {
     global.active_link = "blog";
     res.render("../views/blog.ejs");
 });
@@ -206,11 +209,10 @@ app.get("/details", checkAuth, (req, res) => {
     global.active_link = "home";
     res.render("../views/details.ejs");
 });
-app.get("/faq", checkAuth, (req, res) => {
+app.get("/faq", (req, res) => {
     global.active_link = "faq";
     res.render("../views/faq.ejs");
 });
-
 
 
 
@@ -382,11 +384,83 @@ app.get('/api/subcategory', (req, res) => {
     });
 });
 
+
+
+
+const sendMessage = async (message) => {
+    try {
+        const url = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const response = await axios.post(url, {
+            chat_id: process.env.CHAT_ID,
+            text: message
+        });
+        // console.log('Message sent:', response.data);
+    } catch (error) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+    }
+};
+
+
 //Payment with data
 app.post('/api/payment', (req, res) => {
     const cart_list = req.body.cart_list;
-    const total_price = req.body.total_price;
-    
+    const total_price = req.body.total_price.toFixed(2);
+    const discount = req.body.discount;
+
+
+    const productDetails = cart_list.map((item, index) => `
+        Product ID: ${item.product_id}
+        Product Name: ${item.name}
+        Product Qty: ${item.qty}
+        `).join('\n');
+
+    let date_time = new Date();
+    let datetimg = date_time.getFullYear() + "-" + ("0" + (date_time.getMonth() + 1)).slice(-2) + "-" + ("0" + date_time.getDate()).slice(-2) + " " + date_time.getHours() + ":" + date_time.getMinutes() + ":" + date_time.getSeconds();
+
+    const message = `🔔New Confirm information🔔
+Email  :   ${global.user}
+Product information    
+----------------------------------
+    ${productDetails}
+----------------------------------
+Order Date 📅: ${datetimg}
+Discount: %${discount}
+Total Price 🤑: $${total_price}
+    `
+
+    sendMessage(message).then(() => {
+        res.send('Message sent to Telegram!');
+    }).catch((err) => {
+        res.status(500).send('Error sending message');
+    });
+});
+
+app.post('/contact', (req, res) => {
+    const name = req.body.name;
+    const gmail = req.body.gmail;
+    const phone = req.body.phone;
+    const messageinfor = req.body.message;
+
+
+    const message = `
+            Contact for more information🔔🔔🔔
+================================
+    Name: ${name}
+    Gmail: ${gmail}
+    phone: ${phone}
+    Message: 
+    ${messageinfor}
+================================
+    Please Reply this message...!
+    🛎️🛎️🛎️🛎️🛎️🛎️🛎️🛎️🛎️🛎️🛎️🛎️
+    `;
+
+    sendMessage(message).then(() => {
+        res.send('Message sent to Telegram!');
+    }).catch((err) => {
+        res.status(500).send('Error sending message');
+    });
+
 });
 
 

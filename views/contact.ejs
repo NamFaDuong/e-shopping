@@ -6,7 +6,7 @@
 
             <!--=============== CART ===============-->
             <!-- show-cart -->
-            <div class="cart " id="cart">
+            <!-- <div class="cart " id="cart">
                 <i class="bx bx-x cart__close" id="cart-close"></i>
                 <h2 class="cart__title-center">My Cart</h2>
                 <div class="cart__container">
@@ -103,7 +103,7 @@
                     <span class="cart__price-item">3 item</span>
                     <span class="cart__price-total">28$</span>
                 </div>
-            </div>
+            </div> -->
 
             <!--=============== user ===============-->
             <%- include("template/user_card.ejs") -%>
@@ -143,28 +143,29 @@
                                     </div>
                                 </div>
                             </div>
-                            <form action="" method="post" class="contact__form grid">
+                            <form action="/contact" method="post" class="contact__form grid">
                                 <div class="contact__inputs grid">
                                     <div class="contact__content">
                                         <label for="name" class="contact__label">Name</label>
-                                        <input type="text" name="name" id="name" class="contact__input">
+                                        <input type="text" name="name" id="name" class="contact__input" required>
                                     </div>
                                     <div class="contact__content">
                                         <label for="gmail" class="contact__label">Gmail</label>
-                                        <input type="text" name="gmail" id="gmail" class="contact__input">
+                                        <input type="text" name="gmail" id="gmail" class="contact__input"
+                                            value="<%=global.user%>">
                                     </div>
                                 </div>
                                 <div class="contact__content">
-                                    <label for="subject" class="contact__label">Subject</label>
-                                    <input type="text" name="subject" id="subject" class="contact__input">
+                                    <label for="phone" class="contact__label">Phone Number</label>
+                                    <input type="number" name="phone" id="phone" class="contact__input" required>
                                 </div>
                                 <div class="contact__content">
                                     <label for="message" class="contact__label">Message</label>
-                                    <textarea name="message" id="message" class="contact__input" rows="7"
-                                        cols="0"></textarea>
+                                    <textarea name="message" id="message" class="contact__input" rows="7" cols="0"
+                                        required></textarea>
                                 </div>
-                                <div class="">
-                                    <a href="#" class="button">Send Message</a>
+                                <div style="display: block;text-align: end;">
+                                    <button class="button" type="submit">Send Message</button>
                                 </div>
                             </form>
                         </div>

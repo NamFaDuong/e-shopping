@@ -1151,7 +1151,7 @@ input {
     cursor: pointer;
 }
 .cart__prices{
-    margin-top: 6rem;
+    margin-top: 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
