@@ -1076,7 +1076,6 @@ input {
     right: -100%;
     padding: 3.5rem 2rem;
     transition: .5s;
-    overflow-y: scroll;
 }
 .cart__title-center{
     font-size: var(--h2-font-size);
@@ -1090,6 +1089,11 @@ input {
     top: 1.25rem;
     right: .9rem;
     cursor: pointer;
+}
+.cart_product{
+    display: block;
+    height: 300px;
+    overflow-y: scroll;
 }
 .cart__container{
     display: grid;
@@ -1108,7 +1112,11 @@ input {
     align-items: center;
 }
 .cart__img{
-    width: 85px;
+    max-width: 85px;
+}
+.cart_qty{
+    width: 50px; 
+    text-align: center;
 }
 .cart__title{
     font-size: var(--normal-font-size);
@@ -1661,3 +1669,4 @@ input {
         grid-template-columns: 1fr;
     }
 }
+

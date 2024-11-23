@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import express from 'express'
+import express, { query } from 'express'
 import bodyParser from 'body-parser';
 import mysql from 'mysql'
 import bcrypt, { hash } from 'bcrypt'
@@ -13,6 +13,7 @@ app.use(express.static("public"))
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -31,6 +32,7 @@ connection.connect(err => {
 
 global.user = 'Guests';
 app.get("/login", (req, res) => {
+    global.user = 'Guests';
     res.render("../views/login.ejs")
 });
 
@@ -82,7 +84,7 @@ app.post("/login", (req, res) => {
                     errorpassword: "",
                     erroruser: "You don't have account...! Please registor before login!"
                 }
-                res.render("../views/login.ejs", { error: error })
+                res.render("../views/login.ejs", { error: error });
             }
         });
     } catch (err) {
@@ -212,18 +214,25 @@ app.get("/faq", checkAuth, (req, res) => {
 
 
 
-//API ENDPOINT
+//--------------------API ENDPOINT--------------------//
 
 //Get Product
 app.get('/api/products', (req, res) => {
-    connection.query('Select * from products', (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Database query error' });
-        } else {
-            res.status(200).json(results);
-        }
-    });
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+                    INNER JOIN conditions ON products.condition_id=conditions.id
+                    where qty > 1
+                    ;`
+        , (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            } else {
+                res.status(200).json(results);
+            }
+        });
 });
 
 //Get Category
@@ -237,6 +246,97 @@ app.get('/api/category', (req, res) => {
         }
     });
 });
+
+
+app.get('/api/filtercategory', (req, res) => {
+    const category_id = req.query.category_id;
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+                    INNER JOIN conditions ON products.condition_id=conditions.id
+                    where category_id=${category_id} AND qty > 1`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+app.get('/api/filterSize', (req, res) => {
+    const size_id = req.query.size_id;
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+                    INNER JOIN conditions ON products.condition_id=conditions.id 
+                    where size_id=${size_id} AND qty > 1`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+
+app.get('/api/filterStyle', (req, res) => {
+    const style_id = req.query.style_id;
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id = subcategory.id
+                    INNER JOIN conditions ON products.condition_id = conditions.id 
+                    where style_id = ${style_id} AND qty > 1`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/filterCondition', (req, res) => {
+    const condition_id = req.query.condition_id;
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id = subcategory.id
+                    INNER JOIN conditions ON products.condition_id = conditions.id 
+                    where products.condition_id =${condition_id} AND qty > 1`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/filterSubcate', (req, res) => {
+    const subCategory_id = req.query.subCategory_id;
+    connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
+                    image
+                    FROM products 
+                    INNER JOIN subcategory ON products.subcategory_id = subcategory.id
+                    INNER JOIN conditions ON products.condition_id = conditions.id 
+                    where subcategory_id = ${subCategory_id} AND qty > 1`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+
+
+
+
 //Get condition
 app.get('/api/conditon', (req, res) => {
     connection.query('Select * from conditions', (err, results) => {
@@ -281,6 +381,17 @@ app.get('/api/subcategory', (req, res) => {
         }
     });
 });
+
+//Payment with data
+app.post('/api/payment', (req, res) => {
+    const cart_list = req.body.cart_list;
+    const total_price = req.body.total_price;
+    
+});
+
+
+
+
 
 
 

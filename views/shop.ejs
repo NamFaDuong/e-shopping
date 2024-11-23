@@ -2,111 +2,50 @@
 
     <body>
         <!--=============== HEADER ===============-->
-        <%- include("navigation.ejs") -%>
+        <%- include("navigation.ejs") %>
             <div id="app">
-
                 <!--=============== CART ===============-->
-                <div class="cart " id="cart">
+                <div class="cart" id="cart">
                     <i class="bx bx-x cart__close" id="cart-close"></i>
                     <h2 class="cart__title-center">My Cart</h2>
-                    <div class="cart__container">
-                        <article class="cart__card">
-                            <div class="cart__box">
-                                <img src="../public/img/cart-1.png" alt="" class="cart__img">
-                            </div>
-                            <div class="cart__details">
-                                <h3 class="cart__title">Windbreaker</h3>
-                                <span class="cart__price">$12.5</span>
-
-                                <div class="cart__amount">
-                                    <div class="cart__amount-content">
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-minus"></i>
-                                        </span>
-                                        <span class="cart__amount-number">1</span>
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-plus"></i>
-                                        </span>
-                                    </div>
-                                    <i class="bx bx-trash-alt cart__amount-trash"></i>
+                    <div class="cart__container" v-if="count_cartlist !=0">
+                        <div class="cart_product">
+                            <article class="cart__card" v-for="(cart,index) in cart_list">
+                                <div class="cart__box">
+                                    <img src="/img/cart-1.png" alt="" class="cart__img">
                                 </div>
-                            </div>
-                        </article>
-                        <article class="cart__card">
-                            <div class="cart__box">
-                                <img src="../public/img/cart-2.png" alt="" class="cart__img">
-                            </div>
-                            <div class="cart__details">
-                                <h3 class="cart__title">Cadigan Hoodia</h3>
-                                <span class="cart__price">$15</span>
+                                <div class="cart__details">
+                                    <h3 class="cart__title">{{ cart.name }}</h3>
+                                    <span class="cart__price">${{ cart.price }}</span>
 
-                                <div class="cart__amount">
-                                    <div class="cart__amount-content">
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-minus"></i>
-                                        </span>
-                                        <span class="cart__amount-number">1</span>
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-plus"></i>
-                                        </span>
+                                    <div class="cart__amount">
+                                        <div class="cart__amount-content">
+                                            <span class="cart__amount-number">
+                                                <input type="number" class="cart_qty" :value="cart.qty">
+                                            </span>
+                                        </div>
+                                        <i class="bx bx-trash-alt cart__amount-trash" @click="delete_item(index)"></i>
                                     </div>
-                                    <i class="bx bx-trash-alt cart__amount-trash"></i>
                                 </div>
-                            </div>
-                        </article>
-                        <article class="cart__card">
-                            <div class="cart__box">
-                                <img src="../public/img/cart-3.png" alt="" class="cart__img">
-                            </div>
-                            <div class="cart__details">
-                                <h3 class="cart__title">Cartoon</h3>
-                                <span class="cart__price">$10</span>
+                            </article>
+                        </div>
 
-                                <div class="cart__amount">
-                                    <div class="cart__amount-content">
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-minus"></i>
-                                        </span>
-                                        <span class="cart__amount-number">1</span>
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-plus"></i>
-                                        </span>
-                                    </div>
-                                    <i class="bx bx-trash-alt cart__amount-trash"></i>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="cart__card">
-                            <div class="cart__box">
-                                <img src="../public/img/cart-3.png" alt="" class="cart__img">
-                            </div>
-                            <div class="cart__details">
-                                <h3 class="cart__title">Cartoon</h3>
-                                <span class="cart__price">$10</span>
-
-                                <div class="cart__amount">
-                                    <div class="cart__amount-content">
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-minus"></i>
-                                        </span>
-                                        <span class="cart__amount-number">1</span>
-                                        <span class="cart__amount-box">
-                                            <i class="bx bx-plus"></i>
-                                        </span>
-                                    </div>
-                                    <i class="bx bx-trash-alt cart__amount-trash"></i>
-                                </div>
-                            </div>
-                        </article>
                     </div>
-                    <div class="cart__prices">
-                        <span class="cart__price-item">3 item</span>
-                        <span class="cart__price-total">28$</span>
+                    <div class="cart__prices" v-if="count_cartlist !=0">
+                        <span class="cart__price-item">{{ count_cartlist }} item</span>
+                        <span class="cart__price-total">{{ total_price }}$</span>
+                    </div>
+                    <div class="payment_input" v-if="count_cartlist !=0">
+                        <input type="number" name="payment_price" id="payment_price" placeholder="0">
+                    </div>
+                    <div class="paymentbutton" style="display: block; text-align: end;padding-top: 1rem;"
+                        v-if="count_cartlist !=0">
+                        <a href="/details" type="button" class="button" @click="payment()">Payment</a>
                     </div>
                 </div>
 
                 <!--=============== user ===============-->
-                <%- include("template/user_card.ejs") -%>
+                <%- include("template/user_card.ejs") %>
 
                     <!--=============== MAIN ===============-->
                     <main class="main">
@@ -118,13 +57,31 @@
                             <div class="shop__container grid">
                                 <div class="sidebar">
                                     <h3 class="filter__title">Select filters</h3>
+
                                     <div class="filter__content">
                                         <h3 class="filter__subtitle">Condition</h3>
-
-                                        <div class="filter__content" v-for="(conditions,index) in condition_list">
+                                        <div class="filter">
+                                            <input type="radio" name="filter" id="filter" @click="getProducts()"
+                                                checked="checked">
+                                            <p>All</p>
+                                        </div>
+                                        <div class="filter__content" v-for="(condition,index) in condition_list">
                                             <div class="filter">
-                                                <input type="checkbox" name="" id="">
-                                                <p>{{ conditions.condition_name }}</p>
+                                                <input type="radio" name="filter" id="filter"
+                                                    @click="getFilterByCondition(condition.id)">
+                                                <p>{{ condition.condition_name }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="filter__content">
+                                        <h3 class="filter__subtitle">Categories</h3>
+
+                                        <div class="filter__content">
+                                            <div class="filter" v-for="(categories,index) in category_list">
+                                                <input type="radio" name="filter" id="filter"
+                                                    @click="getFilterByCategory(categories.id)">
+                                                <p>{{ categories.category }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -134,19 +91,9 @@
 
                                         <div class="filter__content" v-for="(sizess,index) in size_list">
                                             <div class="filter">
-                                                <input type="checkbox" name="" id="">
+                                                <input type="radio" name="filter" id="filter"
+                                                    @click="getFilterBySize(sizess.id)">
                                                 <p>{{ sizess.size }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="filter__content">
-                                        <h3 class="filter__subtitle">Categories</h3>
-
-                                        <div class="filter__content" v-for="(categories,index) in category_list">
-                                            <div class="filter">
-                                                <input type="checkbox" name="" id="">
-                                                <p>{{ categories.category }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -156,7 +103,8 @@
 
                                         <div class="filter__content" v-for="(styles,index) in style_list">
                                             <div class="filter">
-                                                <input type="checkbox" name="" id="">
+                                                <input type="radio" name="filter" id="filter"
+                                                    @click="getFilterByStyle(styles.id)">
                                                 <p>{{ styles.style }}</p>
                                             </div>
                                         </div>
@@ -167,7 +115,8 @@
 
                                         <div class="filter__content" v-for="(subcates,index) in subcate_list">
                                             <div class="filter">
-                                                <input type="checkbox" name="" id="">
+                                                <input type="radio" name="filter" id="filter"
+                                                    @click="getFilterBySubCategory(subcates.id)">
                                                 <p>{{ subcates.sub_category }}</p>
                                             </div>
                                         </div>
@@ -175,18 +124,25 @@
 
                                 </div>
                                 <div class="shop__items grid">
-                                    <div class="shop__content" v-for="(product,index) in product_list">
-                                        <div class="shop__tag">{{ product.condition_id }}</div>
-                                        <img src="/img/product-1.png" alt="image" class="shop__img">
-                                        <h3 class="shop__title">{{ product.product }}</h3>
-                                        <span class="shop__subtitle">{{ product.sub_category_id }}</span>
+                                    <div class="shop__content" v-for="(products,index) in product_list">
+                                        <div class="shop__tag">{{ products.condition_name }}</div>
+                                        <img :src="products.image" alt="image" class="shop__img">
+                                        <h3 class="shop__title">{{ products.product }}</h3>
+                                        <span class="shop__subtitle">{{ products.sub_category }}</span>
                                         <div class="shop__prices">
-                                            <span class="shop__price">${{ product.price }}</span>
-                                            <span class="shop__discounts">${{ product.price }}</span>
+                                            <span class="shop__price">${{ products.price }}</span>
+                                            <span class="shop__discounts">%{{ products.discount }}</span>
                                         </div>
-                                        <a href="/details" class="button shop__button">
+                                        <!-- <center>
+                                            <button class="button"
+                                                style="padding: 5px 10px;background-color: blue; margin-top: 2px;"
+                                                @click="view_detail(products.id)">
+                                                View
+                                                details</button>
+                                        </center> -->
+                                        <button class="button shop__button" @click="shop_cart(products)">
                                             <i class="bx bx-cart-alt shop__icon"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -209,10 +165,187 @@
                 <script>
                     const { createApp } = Vue;
                     createApp({
+                        mounted() {
+                            /*=============== SHOW MENU ===============*/
+                            const navMenu = document.getElementById('nav-menu'),
+                                navToggle = document.getElementById('nav-toggle'),
+                                navClose = document.getElementById('nav-close');
+
+
+                            /*===== MENU SHOW =====*/
+                            /* Validate if constant exists */
+                            if (navToggle) {
+                                navToggle.addEventListener('click', () => {
+                                    navMenu.classList.add('show-menu');
+                                })
+                            }
+
+                            /*===== MENU HIDDEN =====*/
+                            /* Validate if constant exists */
+                            if (navClose) {
+                                navClose.addEventListener('click', () => {
+                                    navMenu.classList.remove('show-menu');
+                                })
+                            }
+
+                            /*=============== SHOW CART ===============*/
+                            const cart = document.getElementById('cart'),
+                                cartShop = document.getElementById('cart-shop'),
+                                cartClose = document.getElementById('cart-close');
+
+                            /*===== CART SHOW =====*/
+                            /* Validate if constant exists */
+                            if (cartShop) {
+                                cartShop.addEventListener('click', () => {
+                                    cart.classList.add('show-cart');
+                                })
+                            }
+
+                            /*===== CART HIDDEN =====*/
+                            /* Validate if constant exists */
+                            if (cartClose) {
+                                cartClose.addEventListener('click', () => {
+                                    cart.classList.remove('show-cart');
+                                })
+                            }
+
+                            /*=============== SHOW user ===============*/
+                            const user = document.getElementById('user'),
+                                usertoggle = document.getElementById('user-toggle'),
+                                userClose = document.getElementById('user-close');
+
+                            /*===== user SHOW =====*/
+                            /* Validate if constant exists */
+                            if (usertoggle) {
+                                usertoggle.addEventListener('click', () => {
+                                    user.classList.add('show-user');
+                                })
+                            }
+
+                            /*===== user HIDDEN =====*/
+                            /* Validate if constant exists */
+                            if (userClose) {
+                                userClose.addEventListener('click', () => {
+                                    user.classList.remove('show-user');
+                                })
+                            }
+
+                            /*=============== HOME SWIPER ===============*/
+                            var homeswiper = new Swiper(".home-swiper", {
+                                spaceBetween: 30,
+                                loop: 'true',
+
+                                pagination: {
+                                    el: ".swiper-pagination",
+                                    clickable: true,
+                                }
+                            });
+
+                            /*=============== CHANGE BACKGROUND HEADER ===============*/
+                            function scrollHeader() {
+                                const header = document.getElementById('header');
+                                if (this.scrollY >= 50) {
+                                    header.classList.add('scroll-header');
+                                }
+                                else {
+                                    header.classList.remove('scroll-header');
+                                }
+                            }
+                            window.addEventListener('scroll', scrollHeader);
+
+                            /*=============== NEW SWIPER ===============*/
+                            var newswiper = new Swiper(".new-swiper", {
+                                spaceBetween: 15,
+                                centeredSlides: true,
+                                slidesPerView: 'auto',
+                                loop: 'true',
+                            });
+
+                            /*=============== SHOW SCROLL UP ===============*/
+                            function scrollUp() {
+                                const scrollUp = document.getElementById('scroll-up');
+                                if (this.scrollY >= 350) {
+                                    scrollUp.classList.add('show-scroll');
+                                }
+                                else {
+                                    scrollUp.classList.remove('show-scroll');
+                                }
+                            }
+                            window.addEventListener('scroll', scrollUp);
+                            /*=============== LIGHT BOX ===============*/
+
+
+                            /*=============== QUESTIONS ACCORDION ===============*/
+                            const accordionItem = document.querySelectorAll('.questions__item');
+                            accordionItem.forEach((item) => {
+                                const accordionHeader = item.querySelector('.questions__header');
+                                accordionHeader.addEventListener('click', () => {
+                                    const openItem = document.querySelector('.accordion-open');
+                                    toggleItem(item);
+                                    if (openItem && openItem !== item) {
+                                        toggleItem(openItem);
+                                    }
+                                });
+                            });
+                            const toggleItem = (item) => {
+                                const accordionContent = item.querySelector('.questions__content');
+
+                                if (item.classList.contains('accordion-open')) {
+                                    accordionContent.removeAttribute('style');
+                                    item.classList.remove('accordion-open');
+                                } else {
+                                    accordionContent.style.height = accordionContent.scrollHeight + 'px';
+                                    item.classList.add('accordion-open');
+                                }
+                            };
+
+                            /*=============== STYLE SWITCHER ===============*/
+                            const styleSwitcherToggle = document.querySelector(".style__switcher-toggler");
+                            styleSwitcherToggle.addEventListener("click", () => {
+                                document.querySelector(".style__switcher").classList.toggle("open");
+
+                            });
+                            // HIDE STYLE SWITCHER ON SCROLL
+                            window.addEventListener("scroll", () => {
+                                if (document.querySelector(".style__switcher").classList.contains("open")) {
+                                    document.querySelector(".style__switcher").classList.remove("open");
+                                }
+                            })
+                            // THEME COLORS
+                            function themeColors() {
+                                const colorStyle = document.querySelector(".js-color-style"),
+                                    themeColorsContainer = document.querySelector(".js-theme-colors");
+                                themeColorsContainer.addEventListener("click", ({ target }) => {
+                                    if (target.classList.contains("js-theme-color-item")) {
+                                        localStorage.setItem("color", target.getAttribute("data-js-theme-color"));
+                                        setColors();
+                                    }
+                                })
+                                function setColors() {
+                                    let path = colorStyle.getAttribute("href").split("/");
+                                    path = path.slice(0, path.length - 1);
+                                    colorStyle.setAttribute("href", path.join("/") + "/" + localStorage.getItem("color") + ".css");
+
+                                    if (document.querySelector(".js-theme-color-item.active")) {
+                                        document.querySelector(".js-theme-color-item.active").classList.remove("active");
+                                    }
+                                    document.querySelector("[data-js-theme-color=" + localStorage.getItem("color") + "]").classList.add("active");
+                                }
+                                if (localStorage.getItem("color") !== null) {
+                                    setColors();
+                                }
+                                else {
+                                    const defaultColor = colorStyle.getAttribute("href").split("/").pop().split(".").shift();
+                                    document.querySelector("[data-js-theme-color=" + defaultColor + "]").classList.add("active");
+
+                                }
+                            }
+                            themeColors();
+                        },
                         created() {
                             this.getProducts(),
                                 this.getCategories(),
-                                this.getConditions(),
+                                this.getCondition(),
                                 this.getSizes(),
                                 this.getStyles(),
                                 this.getSubCategory()
@@ -225,7 +358,10 @@
                                 category_list: [],
                                 style_list: [],
                                 subcate_list: [],
-
+                                category_filter: [],
+                                cart_list: [],
+                                count_cartlist: 0,
+                                total_price: 0
                             };
                         },
                         methods: {
@@ -259,7 +395,7 @@
                                         console.error('Error fetching data:', error);
                                     });
                             },
-                            getConditions() {
+                            getCondition() {
                                 fetch('http://localhost:3000/api/conditon')
                                     .then(response => {
                                         if (!response.ok) {
@@ -319,7 +455,127 @@
                                     .catch(error => {
                                         console.error('Error fetching data:', error);
                                     });
-                            }
+                            },
+                            getFilterByCategory(category_id) {
+                                fetch('http://localhost:3000/api/filtercategory?category_id=' + category_id)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        this.product_list = data;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                            },
+                            getFilterBySize(sizess_id) {
+                                fetch('http://localhost:3000/api/filterSize?size_id=' + sizess_id)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        this.product_list = data;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                            },
+                            getFilterByStyle(style_id) {
+                                fetch('http://localhost:3000/api/filterStyle?style_id=' + style_id)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        this.product_list = data;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                            },
+                            getFilterByCondition(condition_id) {
+                                fetch('http://localhost:3000/api/filterCondition?condition_id=' + condition_id)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        this.product_list = data;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                            },
+                            getFilterBySubCategory(subCategory_id) {
+                                fetch('http://localhost:3000/api/filterSubcate?subCategory_id=' + subCategory_id)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        this.product_list = data;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching data:', error);
+                                    });
+                            },
+                            shop_cart(products) {
+                                let vm = this
+                                let is_dpl = false
+                                let dpl = this.cart_list.find(obj => {
+                                    if (obj.product_id == products.id) {
+                                        obj.qty++
+                                        is_dpl = true
+                                    }
+                                })
+                                if (is_dpl == false) {
+                                    this.cart_list.push({
+                                        'product_id': products.id,
+                                        'name': products.product,
+                                        'qty': 1,
+                                        'price': products.price,
+                                        'discount': products.discount,
+                                    })
+                                }
+                                vm.count_cartlist = vm.cart_list.length;
+                                vm.calculate_price();
+                            },
+                            delete_item(index_item) {
+                                this.cart_list.splice(index_item, 1);
+                                vm.calculate_price();
+                            },
+                            calculate_price() {
+                                this.total_price = 0;
+                                this.cart_list.forEach(obj => {
+                                    let sub_total = (parseFloat(obj.qty) * parseFloat(obj.price)) - (parseFloat(obj.qty) * parseFloat(obj.price)) * (parseFloat(obj.discount) / 100);
+                                    this.total_price += sub_total;
+                                })
+                                this.total_price = this.total_price.toFixed(2);
+                            },
+                            payment() {
+                                try {
+                                    const response = axios.post('http://localhost:3000/api/payment', {
+                                        cart_list: this.cart_list,
+                                        total_price: this.total_price
+                                    });
+                                    // Handle the response from Node.js
+                                    this.responseMessage = response.data.message;
+                                } catch (error) {
+                                    console.error('There was an error!', error);
+                                }
+                            },
                         },
                     }).mount('#app');
                 </script>
