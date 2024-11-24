@@ -68,7 +68,7 @@ app.post("/login", (req, res) => {
                             if (role === "admin") {
                                 return res.redirect("/admin");
                             } else {
-                                return res.redirect("/home");
+                                return res.redirect("/shop");
                             }
                         }
                         else {
@@ -142,6 +142,7 @@ app.post("/registration", async (req, res) => {
 
 })
 
+// Middleware to check User role
 const checkAuth = (req, res, next) => {
     if (global.user === 'Guests') {
         return res.redirect('/login');
@@ -163,12 +164,11 @@ const checkAdmin = (req, res, next) => {
     });
 };
 
-
-
 // Admin page route
 app.get("/admin", checkAdmin, (req, res) => {
     res.render("../views/admin/dashboard.ejs"); // Render the admin dashboard
 });
+
 
 
 
@@ -415,7 +415,7 @@ app.post('/api/payment', (req, res) => {
         `).join('\n');
 
     let date_time = new Date();
-    let datetimg = date_time.getFullYear() + "-" + ("0" + (date_time.getMonth() + 1)).slice(-2) + "-" + ("0" + date_time.getDate()).slice(-2) + " " + date_time.getHours() + ":" + date_time.getMinutes() + ":" + date_time.getSeconds();
+    let datetime = date_time.getFullYear() + "-" + ("0" + (date_time.getMonth() + 1)).slice(-2) + "-" + ("0" + date_time.getDate()).slice(-2) + " " + date_time.getHours() + ":" + date_time.getMinutes() + ":" + date_time.getSeconds();
 
     const message = `🔔New Confirm information🔔
 Email  :   ${global.user}
@@ -423,7 +423,7 @@ Product information
 ----------------------------------
     ${productDetails}
 ----------------------------------
-Order Date 📅: ${datetimg}
+Order Date 📅: ${datetime}
 Discount: %${discount}
 Total Price 🤑: $${total_price}
     `
@@ -433,7 +433,65 @@ Total Price 🤑: $${total_price}
     }).catch((err) => {
         res.status(500).send('Error sending message');
     });
+
+    Invoice(total_price, discount, datetime, (err, insertId) => {
+        if (err) {
+            console.error('Error inserting invoice:', err);
+        } else {
+            InvoiceDetail(cart_list, insertId);
+            update_Stock(cart_list);
+        }
+    });
+
+
+
 });
+
+function Invoice(total_price, discount, datetime, callback) {
+    try {
+        connection.query(
+            `INSERT INTO invoice VALUES(NULL,${total_price},'${datetime}',${discount});`,
+            function (err, result) {
+                if (err) {
+                    callback(err, null); // Pass error to the callback
+                } else {
+                    callback(null, result.insertId); // Pass the insertId to the callback
+                }
+            }
+        );
+    } catch (err) {
+        callback(err, null); // Pass any other error to the callback
+    }
+}
+
+function InvoiceDetail(cart_list, insertId) {
+    try {
+        cart_list.forEach(product => {
+            connection.query(
+                `INSERT INTO invoice_detail VALUES(${insertId},${product.product_id},${product.qty});`, function (err, result, fields) {
+                    if (err) throw err;
+                }
+            );
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+function update_Stock(cart_list) {
+    try {
+        cart_list.forEach(product => {
+            connection.query(
+                `UPDATE products SET qty = qty - ${product.qty} WHERE products.id = ${product.product_id};`, function (err, result, fields) {
+                    if (err) throw err;
+                }
+            );
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 app.post('/contact', (req, res) => {
     const name = req.body.name;
