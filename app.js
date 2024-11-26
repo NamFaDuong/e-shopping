@@ -4,13 +4,14 @@ import bodyParser from 'body-parser';
 import mysql from 'mysql'
 import bcrypt, { hash } from 'bcrypt'
 import axios from 'axios';
+import cors from 'cors'
 
 
 // import cors from 'cors';
 dotenv.config();
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 const saltRound = 10;
 app.use(express.static("public"))
 
@@ -33,7 +34,9 @@ connection.connect(err => {
     console.log('Connected to MySQL database.');
 });
 
+global.userId = 0;
 global.user = 'Guests';
+
 app.get("/login", (req, res) => {
     global.user = 'Guests';
     res.render("../views/login.ejs")
@@ -56,6 +59,8 @@ app.post("/login", (req, res) => {
                 const user = results[0];
                 const storedPassword = user.password;
                 const role = user.role;
+                const name = user.name;
+                global.user = name;
 
                 bcrypt.compare(loginPassword, storedPassword, (error, results) => {
                     if (error) {
@@ -63,9 +68,10 @@ app.post("/login", (req, res) => {
                     }
                     else {
                         if (results) {
-                            global.user = email;
+                            global.userId = user.id;
+
                             // Redirect based on role
-                            if (role === "admin") {
+                            if (role == "admin") {
                                 return res.redirect("/admin");
                             } else {
                                 return res.redirect("/shop");
@@ -156,7 +162,7 @@ const checkAdmin = (req, res, next) => {
         return res.redirect('/login'); // Redirect to login if not logged in
     }
     // Query the database to check if the user is an admin
-    connection.query("SELECT role FROM users WHERE email = ?", [global.user], (error, results) => {
+    connection.query("SELECT role FROM users WHERE name = ?", [global.user], (error, results) => {
         if (error || results.length === 0 || results[0].role !== "admin") {
             return res.redirect('/home'); // Redirect to home if not admin
         }
@@ -166,7 +172,29 @@ const checkAdmin = (req, res, next) => {
 
 // Admin page route
 app.get("/admin", checkAdmin, (req, res) => {
+    global.active_link = "dashboard";
     res.render("../views/admin/dashboard.ejs"); // Render the admin dashboard
+});
+app.get("/invoice", checkAdmin, (req, res) => {
+    global.active_link = "invoice";
+    res.render("../views/admin/invoice.ejs"); // Render the admin dashboard
+});
+app.get("/user", checkAdmin, (req, res) => {
+    global.active_link = "user";
+    res.render("../views/admin/user.ejs"); // Render the admin dashboard
+});
+
+app.get("/category", checkAdmin, (req, res) => {
+    global.active_link = "category";
+    res.render("../views/admin/category.ejs"); // Render the admin dashboard
+});
+app.get("/style", checkAdmin, (req, res) => {
+    global.active_link = "style";
+    res.render("../views/admin/style.ejs"); // Render the admin dashboard
+});
+app.get("/condition", checkAdmin, (req, res) => {
+    global.active_link = "condition";
+    res.render("../views/admin/condition.ejs"); // Render the admin dashboard
 });
 
 
@@ -219,7 +247,7 @@ app.get("/faq", (req, res) => {
 //--------------------API ENDPOINT--------------------//
 
 //Get Product
-app.get('/api/products', (req, res) => {
+app.get('/api/products', checkAdmin, (req, res) => {
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
                     FROM products 
@@ -237,20 +265,7 @@ app.get('/api/products', (req, res) => {
         });
 });
 
-//Get Category
-app.get('/api/category', (req, res) => {
-    connection.query('Select * from categories', (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Database query error' });
-        } else {
-            res.status(200).json(results);
-        }
-    });
-});
-
-
-app.get('/api/filtercategory', (req, res) => {
+app.get('/api/filtercategory', checkAdmin, (req, res) => {
     const category_id = req.query.category_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -266,7 +281,8 @@ app.get('/api/filtercategory', (req, res) => {
         }
     });
 });
-app.get('/api/filterSize', (req, res) => {
+
+app.get('/api/filterSize', checkAdmin, (req, res) => {
     const size_id = req.query.size_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -283,8 +299,7 @@ app.get('/api/filterSize', (req, res) => {
     });
 });
 
-
-app.get('/api/filterStyle', (req, res) => {
+app.get('/api/filterStyle', checkAdmin, (req, res) => {
     const style_id = req.query.style_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -301,7 +316,7 @@ app.get('/api/filterStyle', (req, res) => {
     });
 });
 
-app.get('/api/filterCondition', (req, res) => {
+app.get('/api/filterCondition', checkAdmin, (req, res) => {
     const condition_id = req.query.condition_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -318,7 +333,7 @@ app.get('/api/filterCondition', (req, res) => {
     });
 });
 
-app.get('/api/filterSubcate', (req, res) => {
+app.get('/api/filterSubcate', checkAdmin, (req, res) => {
     const subCategory_id = req.query.subCategory_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -337,8 +352,425 @@ app.get('/api/filterSubcate', (req, res) => {
 
 
 
+//Count In Dashboard
+
+app.get('/api/count/user', checkAdmin, (req, res) => {
+    connection.query(`SELECT COUNT(*) as countuser FROM users`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/count/product', checkAdmin, (req, res) => {
+    connection.query(`SELECT COUNT(*) as countproduct FROM products`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/count/income', checkAdmin, (req, res) => {
+    connection.query(`SELECT ROUND(SUM(Total_amount),2) as sumIncome FROM invoice;`, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
 
 
+//Invoice
+
+app.get('/api/list/invoice', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT Invoice_id,users.email as email,Total_amount,
+        DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime
+        FROM invoice INNER JOIN users ON invoice.user_id = users.id
+        ORDER BY invoice_id DESC LIMIT 5;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/list/allinvoice', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT Invoice_id,DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
+        Total_amount, discount
+        FROM invoice
+        order by invoice_id desc;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/list/searchInvoiceID', checkAdmin, (req, res) => {
+    const invoice_id = req.query.invoice_id;
+    console.log(invoice_id);
+    connection.query(`
+        SELECT * FROM invoice where invoice_id = ${invoice_id} order by invoice_id desc
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/list/InvoiceDetail', checkAdmin, (req, res) => {
+    const invoice_id = req.query.invoice_id;
+    connection.query(`
+        SELECT products.id as product_id,product,invoice_detail.qty as order_qty 
+        FROM invoice_detail INNER JOIN products ON invoice_detail.product_id=products.id
+        WHERE Invoice_id = ${invoice_id}
+        ;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+
+// User Page
+app.get('/api/list/alluser', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM users;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/list/FilteruserAdmin', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM users where role = 'admin';
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/list/Filterusercustomer', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM users where role = 'customer';
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.post('/api/create/user', checkAdmin, (req, res) => {
+    const user = req.body;
+
+    bcrypt.hash(user.password, saltRound, async (error, hash) => {
+        connection.query(
+            `INSERT INTO users VALUES(NULL,'${user.name}','${user.gender}','${user.phone}','${user.address}','${user.email}','${hash}','${user.role}');`,
+            (err, result, fields) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).json({ error: 'Database query error' });
+                }
+                else {
+                    res.status(200).json(result);
+                }
+            }
+        );
+    });
+});
+
+app.post('/api/delete/user', checkAdmin, (req, res) => {
+    const user_id = req.body.user_id;
+    connection.query(
+        `DELETE FROM users WHERE users.id = ${user_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/user', checkAdmin, (req, res) => {
+    const user = req.body;
+
+    bcrypt.hash(user.password, saltRound, async (error, hash) => {
+        connection.query(
+            `UPDATE users SET name = '${user.name}', gender = '${user.gender}', phone = '${user.phone}',
+            address = '${user.address}', email = '${user.email}', password = '${hash}', role = '${user.role}' WHERE id = ${user.id};`,
+            (err, result, fields) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).json({ error: 'Database query error' });
+                }
+                else {
+                    res.status(200).json(result);
+                }
+            }
+        );
+    });
+});
+
+app.get('/api/detail/user', (req, res) => {
+    const id = req.query.user_id;
+    connection.query(`
+        SELECT * FROM users where id = ${id};
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+// Category page
+app.get('/api/list/allcategory', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM categories;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.post('/api/create/category', (req, res) => {
+    const category = req.body;
+    connection.query(
+        `INSERT INTO categories VALUES(NULL,'${category.name}','${category.description}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/delete/category', checkAdmin, (req, res) => {
+    const category_id = req.body.category_id;
+    connection.query(
+        `DELETE FROM categories WHERE id = ${category_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/category', checkAdmin, (req, res) => {
+    const category = req.body;
+    connection.query(
+        `UPDATE categories SET category = '${category.name}', description = '${category.description}' WHERE id = ${category.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+// Style Page
+app.get('/api/list/allstyle', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM styles;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.post('/api/create/style', (req, res) => {
+    const style_item = req.body;
+    connection.query(
+        `INSERT INTO styles VALUES(NULL,'${style_item.name}','${style_item.description}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/delete/style', checkAdmin, (req, res) => {
+    const style_id = req.body.style_id;
+    connection.query(
+        `DELETE FROM styles WHERE id = ${style_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/style', checkAdmin, (req, res) => {
+    const style_item = req.body;
+    connection.query(
+        `UPDATE styles SET style = '${style_item.name}', description = '${style_item.description}' WHERE id = ${style_item.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+//Condition Page
+app.get('/api/list/allcondition', checkAdmin, (req, res) => {
+    connection.query(`
+        SELECT * FROM conditions;
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.post('/api/create/condition', (req, res) => {
+    const condition_item = req.body;
+    connection.query(
+        `INSERT INTO conditions VALUES(NULL,'${condition_item.name}','${condition_item.description}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/delete/condition', checkAdmin, (req, res) => {
+    const condition_id = req.body.condition_id;
+    connection.query(
+        `DELETE FROM conditions WHERE id = ${condition_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/condition', checkAdmin, (req, res) => {
+    const condition_item = req.body;
+    connection.query(
+        `UPDATE conditions SET condition_name = '${condition_item.name}', description = '${condition_item.description}' WHERE id = ${condition_item.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+
+
+
+
+
+
+
+
+
+
+//Get Category
+app.get('/api/category', (req, res) => {
+    connection.query('Select * from categories', (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
 //Get condition
 app.get('/api/conditon', (req, res) => {
     connection.query('Select * from conditions', (err, results) => {
@@ -448,9 +880,10 @@ Total Price 🤑: $${total_price}
 });
 
 function Invoice(total_price, discount, datetime, callback) {
+    console.log(global.userId);
     try {
         connection.query(
-            `INSERT INTO invoice VALUES(NULL,${total_price},'${datetime}',${discount});`,
+            `INSERT INTO invoice VALUES(NULL,${total_price},'${datetime}',${discount},${global.userId});`,
             function (err, result) {
                 if (err) {
                     callback(err, null); // Pass error to the callback

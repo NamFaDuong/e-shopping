@@ -1,37 +1,62 @@
 <nav class="mt-2">
-    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-        data-accordion="false">
-
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-th"></i>
+            <a href="/admin" class="nav-link <% if (global.active_link === 'dashboard') { %> active <% } %>">
+                <i class="fas fa-chart-pie"></i>
                 <p>
                     Dashboard
                 </p>
             </a>
         </li>
-        <!-- Add icons to the links using the .nav-icon class
-with font-awesome or any other icon font library -->
-        <li class="nav-item ">
-            <!-- menu-open -->
-            <a href="#" class="nav-link">
+        <li class="nav-item">
+            <a href="/invoice" class="nav-link <% if (global.active_link === 'invoice') { %> active <% } %>">
+                <i class="fas fa-file-invoice"></i>
+                <p>
+                    Invoice
+                </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/user" class="nav-link <% if (global.active_link === 'user') { %> active <% } %>">
+                <i class="fas fa-users"></i>
+                <p>
+                    User
+                </p>
+            </a>
+        </li>
+        <li class="nav-item menu-open">
+            <a href="#" class="nav-link <% if (global.active_link === 'Dashboard') { %> active <% } %>">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                    Starter Pages
+                    Products
                     <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link <% if (global.active_link === 'product') { %> active <% } %>">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Active Page</p>
+                        <p>Products</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/category" class="nav-link <% if (global.active_link === 'category') { %> active <% } %>">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Categories</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/style" class="nav-link <% if (global.active_link === 'style') { %> active <% } %>">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Style</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="/condition" class="nav-link <% if (global.active_link === 'condition') { %> active <% } %>">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Inactive Page</p>
+                        <p>condition</p>
                     </a>
                 </li>
             </ul>

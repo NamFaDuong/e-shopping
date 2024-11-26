@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin</title>
+
+    <%- include("admin_template/link_style.ejs") %>
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper" id="app">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Navbar Search -->
+                <li class="nav-item">
+                    
+                    <div class="navbar-search-block">
+                        <form class="form-inline">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                                    aria-label="Search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-navbar" type="submit">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="#" class="brand-link">
+                <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                    style="opacity: .8">
+                <span class="brand-text font-weight-light">E-shop</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">
+                            <%= global.user %>
+                        </a>
+                    </div>
+                </div>
+                <!-- Sidebar Menu -->
+                <%- include("admin_template/admin_navigation.ejs")%>
+                    <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">User Page</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">User</a></li>
+                                <li class="breadcrumb-item active">User Page</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Start Form Insert New User -->
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel" v-if="status == 'add'">Add New User 👤</h5>
+                            <h5 class="modal-title" id="staticBackdropLabel" v-if="status == 'update'">Update User
+                                Information</h5>
+                        </div>
+                        <div class="modal-body" style="padding: 0;">
+                            <form method="post" action="/create_user" enctype="multipart/form-data">
+                                <div class="card-body" style="padding: 10px 20px;">
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="name" class="form-label">Name <span
+                                                        style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" v-model="User.name" id="name"
+                                                    name="name">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="gender" class="form-label">Gender <span
+                                                        style="color: red;">*</span></label>
+                                                <select class="form-control" name="gender" v-model="User.gender"
+                                                    id="gender">
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="phonenumber" class="form-label">Phone Number <span
+                                                        style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" v-model="User.phone"
+                                                    id="phonenumber" name="phonenumber">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="gender" class="form-label">Role</label>
+                                                <select class="form-control" name="role" v-model="User.role" id="role">
+                                                    <option value="customer">customer</option>
+                                                    <option value="Admin">Admin</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Email <span
+                                                style="color: red;">*</span></label>
+                                        <input type="email" class="form-control" v-model="User.email" id="email"
+                                            name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="form-label">password <span
+                                                style="color: red;">*</span></label>
+                                        <input type="password" class="form-control" v-model="User.password"
+                                            id="password" name="password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address" class="form-label">Address</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                            v-model="User.address">{{ User.address }}</textarea>
+                                    </div>
+                                    <input type="hidden" id="user_id" v-model="user_id">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" @click="closeModel()">
+                                <i class="far fa-times-circle"></i>
+                                Close
+                            </button>
+
+                            <button type="button" class="btn btn-primary" @click="onSaveUser()" v-if="status == 'add'">
+                                <i class="fas fa-save"></i>
+                                Save
+                            </button>
+                            <button type="button" id="save" class="btn btn-success" @click="onUpdateUser()"
+                                v-if="status == 'update'">
+                                <i class="fas fa-download"></i>
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Insert New User -->
+
+            <!-- Pop up user detail -->
+            <div class="modal fade" id="user_detail" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">User Detail</h5>
+                        </div>
+                        <div class="modal-body" v-for="(user, index) in user_detail">
+                            <div class="user_card" style="margin: auto; justify-content: center; text-align: center;">
+                                <div v-if="user.gender == 'male'">
+                                    <h1 style="text-transform: uppercase;"> Mr. {{ user.name }} </h1>
+                                </div>
+                                <div v-if="user.gender == 'female'">
+                                    <h1 style="text-transform: uppercase;"> Mrs. {{ user.name }} </h1>
+                                </div>
+
+                                <div class="icon" style="justify-content: space-between;font-size: 25px;">
+                                    <i class="fab fa-facebook" style="color: blue;"></i>
+                                    <i class="fab fa-facebook-messenger" style="color: blue;"></i>
+                                    <i class="fab fa-instagram" style="color: red;"></i>
+                                    <i class="fab fa-youtube" style="color: red;"></i>
+                                </div>
+                                <hr>
+                                <div class="user_data" style="justify-content: center; display: flex;">
+                                    <div class="user_description" style="text-align: left;">
+                                        <h3 style="padding-right: 50px; color: gray;">Email</h3>
+                                        <h3 style="padding-right: 50px; color: gray;">Gender</h3>
+                                        <h3 style="padding-right: 50px; color: gray;">Phone</h3>
+                                        <h3 style="padding-right: 50px; color: gray;">Address</h3>
+                                    </div>
+                                    <div class="user_information" style="text-align: left;">
+                                        <h3>{{ user.email }}</h3>
+                                        <h3>{{ user.gender }}</h3>
+                                        <h3>{{ user.phone }}</h3>
+                                        <h3>{{ user.address }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" @click="closeUserDetail()">
+                                <i class="far fa-times-circle"></i>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--  Pop up user detail  -->
+
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+
+                                    <button type="button" class="btn btn-outline-primary" @click="openModel()">
+                                        <i class="fas fa-plus-circle"></i>
+                                        Add new
+                                    </button>
+
+                                    <div class="form-check form-check-inline" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="radio" id="all" name="Auth"
+                                            value="form-check-input" checked @click="GetUser()">
+                                        <label class="form-check-label" for="all">All</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline" style="padding-left: 10px;">
+                                        <input class="form-check-input" type="radio" id="admin" name="Auth"
+                                            value="form-check-input" @click="filterUseradmin()">
+                                        <label class="form-check-label" for="admin">Admin</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="customer" name="Auth"
+                                            value="form-check-input" @click="filterUsercustomer()">
+                                        <label class="form-check-label" for="customer">Customer</label>
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive" style="height: 450px;overflow-y:scroll;">
+                                        <table class="table table-striped border">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Phone</th>
+                                                    <th>Email</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="userTableBody">
+                                                <tr v-for="(user, index) in Users_list">
+                                                    <td class="text-center">{{ index + 1 }}</td>
+                                                    <td class="text-left">{{ user.name }}</td>
+                                                    <td class="text-center">{{ user.gender }}</td>
+                                                    <td class="text-left">{{ user.phone }}</td>
+                                                    <td class="text-left">{{ user.email }}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-outline-secondary mr-2"
+                                                            @click="UserDetail(user.id)">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-danger mr-2"
+                                                            @click="onDeleteUser(user.id)">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-warning mr-2"
+                                                            @click="onEditUser(user)">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <!-- Main Footer -->
+        <footer class="main-footer" style="text-align: center;">
+            <span class="footer__copy">&#169; DUONG <span style="color: gold;">NAMFA</span>. All right
+                reserve</span>
+        </footer>
+    </div>
+
+    <!-- ./wrapper -->
+
+    <%- include("admin_template/link_script.ejs") -%>
+        <script>
+            const { createApp } = Vue;
+            createApp({
+                created() {
+                    this.GetUser()
+                },
+                data() {
+                    return {
+                        Users_list: [],
+                        status: 'add',
+                        User: {
+                            name: '',
+                            gender: 'male',
+                            phone: '+855-',
+                            address: '',
+                            email: '@gmail.com',
+                            password: '',
+                            role: 'customer'
+                        },
+                        user_id: '',
+                        user_detail: ''
+                    };
+                },
+                methods: {
+                    openUserDetail() {
+                        $('#user_detail').modal('show')
+                    },
+                    closeUserDetail() {
+                        $('#user_detail').modal('hide')
+                    },
+                    openModel() {
+                        $('#myModal').modal('show')
+                    },
+                    closeModel() {
+                        $('#myModal').modal('hide')
+                        this.clearCode()
+                    },
+                    clearCode() {
+                        this.status = 'add',
+                            this.User = {
+                                name: '',
+                                gender: 'male',
+                                phone: '+855-',
+                                address: '',
+                                email: '@gmail.com',
+                                password: ''
+                            }
+                        this.user_id = '';
+                    },
+                    GetUser() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/list/alluser')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Users_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                    onSaveUser() {
+                        if (this.User.name == null || this.User.name == '') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter name...!",
+                            });
+                            return
+                        }
+                        if (this.User.phone == '+855-') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter phone number..!",
+                            });
+                            return
+                        }
+                        if (this.User.email == '@gmail.com') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter email...!",
+                            });
+                            return
+                        }
+                        if (this.User.password == null || this.User.password == '') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter Password...!",
+                            });
+                            return
+                        }
+
+                        let currect_user = {
+                            name: this.User.name,
+                            gender: this.User.gender,
+                            phone: this.User.phone,
+                            email: this.User.email,
+                            password: this.User.password,
+                            address: this.User.address,
+                            role: this.User.role
+                        };
+                        let vm = this;
+                        $.LoadingOverlay("show");
+                        axios.post('http://localhost:3000/api/create/user', currect_user)
+                            .then(function (response) {
+                                vm.GetUser();
+                                $.LoadingOverlay("hide");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Order Success",
+                                    showConfirmButton: false
+                                });
+                                vm.closeModel();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    },
+                    onDeleteUser(user_id) {
+                        Swal.fire({
+                            title: "Do you want to save the changes?",
+                            showDenyButton: true,
+                            // showCancelButton: true,
+                            confirmButtonText: "Delete",
+                            denyButtonText: `cancel`
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                let vm = this
+                                $.LoadingOverlay("show");
+                                let url_api = "http://127.0.0.1:3000/api/delete/user"
+                                // Make a request for a user with a given ID
+                                axios.post(url_api, { user_id: user_id })
+                                    .then(function (response) {
+                                        // handle success
+                                        vm.GetUser()
+                                        $.LoadingOverlay("hide")
+                                    })
+                                    .catch(function (error) {
+                                        console.log(error);
+                                    });
+                            } else if (result.isDenied) {
+                                //
+                            }
+                        });
+
+                    },
+                    onEditUser(user) {
+                        this.status = 'update',
+                            this.User.name = user.name,
+                            this.User.gender = user.gender,
+                            this.User.phone = user.phone,
+                            this.User.email = user.email,
+                            this.password = '',
+                            this.User.address = user.address,
+                            this.user_id = user.id,
+                            this.openModel()
+                    },
+                    onUpdateUser() {
+                        if (this.User.name == null || this.User.name == '') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter name...!",
+                            });
+                            return
+                        }
+                        if (this.User.phone == '+855-') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter phone number..!",
+                            });
+                            return
+                        }
+                        if (this.User.email == '@gmail.com') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter email...!",
+                            });
+                            return
+                        }
+                        if (this.User.password == null || this.User.password == '') {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "Please enter Password...!",
+                            });
+                            return
+                        }
+
+                        let currect_user = {
+                            id: this.user_id,
+                            name: this.User.name,
+                            gender: this.User.gender,
+                            phone: this.User.phone,
+                            email: this.User.email,
+                            password: this.User.password,
+                            address: this.User.address,
+                            role: this.User.role
+                        };
+
+                        let vm = this;
+                        $.LoadingOverlay("show");
+                        axios.post('http://localhost:3000/api/update/user', currect_user)
+                            .then(function (response) {
+                                vm.GetUser();
+                                $.LoadingOverlay("hide");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Updated Success",
+                                    showConfirmButton: false
+                                });
+                                vm.closeModel();
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    },
+                    UserDetail(id) {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/detail/user?user_id=' + id)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.openUserDetail()
+                                this.user_detail = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                    filterUseradmin() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/list/FilteruserAdmin')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Users_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                    filterUsercustomer() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/list/Filterusercustomer')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Users_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                },
+            }).mount('#app');
+        </script>
+</body>
+
+</html>
