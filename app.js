@@ -196,7 +196,14 @@ app.get("/condition", checkAdmin, (req, res) => {
     global.active_link = "condition";
     res.render("../views/admin/condition.ejs"); // Render the admin dashboard
 });
-
+app.get("/subcategory", checkAdmin, (req, res) => {
+    global.active_link = "subcategory";
+    res.render("../views/admin/subcategory.ejs"); // Render the admin dashboard
+});
+app.get("/size", checkAdmin, (req, res) => {
+    global.active_link = "size";
+    res.render("../views/admin/sizes.ejs"); // Render the admin dashboard
+});
 
 
 
@@ -247,7 +254,7 @@ app.get("/faq", (req, res) => {
 //--------------------API ENDPOINT--------------------//
 
 //Get Product
-app.get('/api/products', checkAdmin, (req, res) => {
+app.get('/api/products', (req, res) => {
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
                     FROM products 
@@ -265,7 +272,7 @@ app.get('/api/products', checkAdmin, (req, res) => {
         });
 });
 
-app.get('/api/filtercategory', checkAdmin, (req, res) => {
+app.get('/api/filtercategory', (req, res) => {
     const category_id = req.query.category_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -282,7 +289,7 @@ app.get('/api/filtercategory', checkAdmin, (req, res) => {
     });
 });
 
-app.get('/api/filterSize', checkAdmin, (req, res) => {
+app.get('/api/filterSize', (req, res) => {
     const size_id = req.query.size_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -299,7 +306,7 @@ app.get('/api/filterSize', checkAdmin, (req, res) => {
     });
 });
 
-app.get('/api/filterStyle', checkAdmin, (req, res) => {
+app.get('/api/filterStyle', (req, res) => {
     const style_id = req.query.style_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -316,7 +323,7 @@ app.get('/api/filterStyle', checkAdmin, (req, res) => {
     });
 });
 
-app.get('/api/filterCondition', checkAdmin, (req, res) => {
+app.get('/api/filterCondition', (req, res) => {
     const condition_id = req.query.condition_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -333,7 +340,7 @@ app.get('/api/filterCondition', checkAdmin, (req, res) => {
     });
 });
 
-app.get('/api/filterSubcate', checkAdmin, (req, res) => {
+app.get('/api/filterSubcate', (req, res) => {
     const subCategory_id = req.query.subCategory_id;
     connection.query(`SELECT products.id,product,price,discount,sub_category,condition_name,
                     image
@@ -349,6 +356,10 @@ app.get('/api/filterSubcate', checkAdmin, (req, res) => {
         }
     });
 });
+
+
+
+
 
 
 
@@ -550,7 +561,7 @@ app.post('/api/update/user', checkAdmin, (req, res) => {
     });
 });
 
-app.get('/api/detail/user', (req, res) => {
+app.get('/api/detail/user', checkAdmin, (req, res) => {
     const id = req.query.user_id;
     connection.query(`
         SELECT * FROM users where id = ${id};
@@ -565,7 +576,7 @@ app.get('/api/detail/user', (req, res) => {
 });
 
 // Category page
-app.get('/api/list/allcategory', checkAdmin, (req, res) => {
+app.get(['/api/list/allcategory', '/api/category'], (req, res) => {
     connection.query(`
         SELECT * FROM categories;
         `, (err, results) => {
@@ -578,7 +589,7 @@ app.get('/api/list/allcategory', checkAdmin, (req, res) => {
     });
 });
 
-app.post('/api/create/category', (req, res) => {
+app.post('/api/create/category', checkAdmin, (req, res) => {
     const category = req.body;
     connection.query(
         `INSERT INTO categories VALUES(NULL,'${category.name}','${category.description}');`,
@@ -627,7 +638,7 @@ app.post('/api/update/category', checkAdmin, (req, res) => {
 });
 
 // Style Page
-app.get('/api/list/allstyle', checkAdmin, (req, res) => {
+app.get(['/api/list/allstyle', '/api/style'], (req, res) => {
     connection.query(`
         SELECT * FROM styles;
         `, (err, results) => {
@@ -640,7 +651,7 @@ app.get('/api/list/allstyle', checkAdmin, (req, res) => {
     });
 });
 
-app.post('/api/create/style', (req, res) => {
+app.post('/api/create/style', checkAdmin, (req, res) => {
     const style_item = req.body;
     connection.query(
         `INSERT INTO styles VALUES(NULL,'${style_item.name}','${style_item.description}');`,
@@ -689,7 +700,7 @@ app.post('/api/update/style', checkAdmin, (req, res) => {
 });
 
 //Condition Page
-app.get('/api/list/allcondition', checkAdmin, (req, res) => {
+app.get(['/api/list/allcondition', '/api/conditon'], (req, res) => {
     connection.query(`
         SELECT * FROM conditions;
         `, (err, results) => {
@@ -702,7 +713,7 @@ app.get('/api/list/allcondition', checkAdmin, (req, res) => {
     });
 });
 
-app.post('/api/create/condition', (req, res) => {
+app.post('/api/create/condition', checkAdmin, (req, res) => {
     const condition_item = req.body;
     connection.query(
         `INSERT INTO conditions VALUES(NULL,'${condition_item.name}','${condition_item.description}');`,
@@ -750,19 +761,11 @@ app.post('/api/update/condition', checkAdmin, (req, res) => {
     );
 });
 
-
-
-
-
-
-
-
-
-
-
-//Get Category
-app.get('/api/category', (req, res) => {
-    connection.query('Select * from categories', (err, results) => {
+//Sub Category
+app.get(['/api/list/allsubCategory', '/api/subcategory'], (req, res) => {
+    connection.query(`
+        SELECT * FROM subcategory;
+        `, (err, results) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Database query error' });
@@ -771,9 +774,60 @@ app.get('/api/category', (req, res) => {
         }
     });
 });
-//Get condition
-app.get('/api/conditon', (req, res) => {
-    connection.query('Select * from conditions', (err, results) => {
+
+app.post('/api/create/subCategory', checkAdmin, (req, res) => {
+    const subcategory_item = req.body;
+    connection.query(
+        `INSERT INTO subcategory VALUES(NULL,'${subcategory_item.name}','${subcategory_item.description}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/delete/subCategory', checkAdmin, (req, res) => {
+    const subcategory_id = req.body.subcategory_id;
+    connection.query(
+        `DELETE FROM subcategory WHERE id = ${subcategory_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/subCategory', checkAdmin, (req, res) => {
+    const subcategory_item = req.body;
+    connection.query(
+        `UPDATE subcategory SET sub_category = '${subcategory_item.name}', description = '${subcategory_item.description}' WHERE id = ${subcategory_item.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+//Size 
+app.get(['/api/list/allsizes', '/api/size'], (req, res) => {
+    connection.query(`
+        SELECT * FROM sizes;
+        `, (err, results) => {
         if (err) {
             console.error(err);
             res.status(500).json({ error: 'Database query error' });
@@ -782,39 +836,56 @@ app.get('/api/conditon', (req, res) => {
         }
     });
 });
-//Get size
-app.get('/api/size', (req, res) => {
-    connection.query('Select * from sizes', (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Database query error' });
-        } else {
-            res.status(200).json(results);
+
+app.post('/api/create/sizes', checkAdmin, (req, res) => {
+    const size_item = req.body;
+    connection.query(
+        `INSERT INTO sizes VALUES(NULL,'${size_item.name}','${size_item.description}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
         }
-    });
+    );
 });
-//Get style
-app.get('/api/style', (req, res) => {
-    connection.query('Select * from styles', (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Database query error' });
-        } else {
-            res.status(200).json(results);
+
+app.post('/api/delete/sizes', checkAdmin, (req, res) => {
+    const size_id = req.body.size_id;
+    connection.query(
+        `DELETE FROM sizes WHERE id = ${size_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
         }
-    });
+    );
 });
-//Get subcategory
-app.get('/api/subcategory', (req, res) => {
-    connection.query('Select * from subcategory', (err, results) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ error: 'Database query error' });
-        } else {
-            res.status(200).json(results);
+
+app.post('/api/update/sizes', checkAdmin, (req, res) => {
+    const size_item = req.body;
+    connection.query(
+        `UPDATE sizes SET sizes = '${size_item.name}', description = '${size_item.description}' WHERE id = ${size_item.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
         }
-    });
+    );
 });
+
+
 
 
 

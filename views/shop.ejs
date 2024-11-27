@@ -10,7 +10,7 @@
                     <h2 class="cart__title-center">My Cart</h2>
                     <div class="cart__container" v-if="count_cartlist !=0">
                         <div class="cart_product">
-                            <article class="cart__card" v-for="(cart,index) in cart_list">
+                            <article class="cart__card" v-for="(cart,index) in cart_list" style="margin-bottom: 2px;">
                                 <div class="cart__box">
                                     <img src="/img/cart-1.png" alt="" class="cart__img">
                                 </div>
@@ -150,7 +150,8 @@
 
                                 </div>
                                 <div class="shop__items grid">
-                                    <div class="shop__content" v-for="(products,index) in product_list">
+                                    <div class="shop__content" v-for="(products,index) in product_list"
+                                        @click="shop_cart(products)">
                                         <div class="shop__tag">{{ products.condition_name }}</div>
                                         <img :src="products.image" alt="image" class="shop__img">
                                         <h3 class="shop__title">{{ products.product }}</h3>
