@@ -52,11 +52,10 @@ app.post("/login", (req, res) => {
                 console.error("Database query error:", error);
                 return;
             }
-
-
             // Check if we got results
             if (results.length > 0) {
                 const user = results[0];
+
                 const storedPassword = user.password;
                 const role = user.role;
                 const name = user.name;
@@ -105,15 +104,14 @@ app.post("/login", (req, res) => {
 
 app.get("/registration", (req, res) => {
     res.render("../views/registration.ejs")
-})
+});
 
 app.post("/registration", async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const confirmpassword = req.body.confirmpassword;
+    const currect_user = req.body;
+    const role = 'customer';
 
     try {
-        connection.query("SELECT * FROM users WHERE email = ?", [email], (error, results) => {
+        connection.query("SELECT * FROM users WHERE email = ?", [currect_user.email], (error, results) => {
             if (error) {
                 console.error("Database query error:", error);
                 return;
@@ -125,17 +123,28 @@ app.post("/registration", async (req, res) => {
                 var emailed = user.email;
                 res.render("../views/login.ejs", { emailed: emailed })
             } else {
-                if (password === confirmpassword) {
-                    bcrypt.hash(password, saltRound, async (error, hash) => {
+                if (currect_user.password === currect_user.confirmpassword) {
+                    bcrypt.hash(currect_user.password, saltRound, async (error, hash) => {
                         if (error) {
                             console.log("Error hashing password", error);
                         }
                         else {
-                            const result = connection.query(
-                                "INSERT INTO users (email, password) VALUES ('" + email + "', '" + hash + "')"
+
+                            connection.query(
+                                `INSERT INTO users VALUES(NULL,'${currect_user.name}','${currect_user.gender}','${currect_user.phone}',
+                                '${currect_user.address}','${currect_user.email}','${hash}','${role}');`,
+                                (err, result, fields) => {
+                                    if (err) {
+                                        console.error(err);
+                                        res.status(500).json({ error: 'Database query error' });
+                                    } else {
+                                        global.user = currect_user.name;
+                                        res.status(200).json(result);
+                                    }
+                                }
                             );
-                            global.user = email;
-                            res.render("../views/index.ejs");
+
+
                         }
                     });
 
@@ -146,7 +155,7 @@ app.post("/registration", async (req, res) => {
         console.log(err);
     }
 
-})
+});
 
 // Middleware to check User role
 const checkAuth = (req, res, next) => {
@@ -203,6 +212,10 @@ app.get("/subcategory", checkAdmin, (req, res) => {
 app.get("/size", checkAdmin, (req, res) => {
     global.active_link = "size";
     res.render("../views/admin/sizes.ejs"); // Render the admin dashboard
+});
+app.get("/product", checkAdmin, (req, res) => {
+    global.active_link = "product";
+    res.render("../views/admin/product.ejs"); // Render the admin dashboard
 });
 
 
@@ -357,6 +370,111 @@ app.get('/api/filterSubcate', (req, res) => {
     });
 });
 
+app.get('/api/get/allproduct', (req, res) => {
+    connection.query(`
+        select * from products
+        ;`
+        , (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            } else {
+                res.status(200).json(results);
+            }
+        });
+});
+
+app.get('/api/get/product_detail', (req, res) => {
+    const product_id = req.query.product_id_detail;
+    connection.query(`
+        select products.id,product,products.description AS description,qty,price,cost,discount,
+        category, sub_category,condition_name,image
+        FROM products 
+        INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+        INNER JOIN conditions ON products.condition_id=conditions.id
+        INNER JOIN categories ON products.category_id=categories.id
+        where products.id=${product_id}
+        ;`
+        , (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            } else {
+                res.status(200).json(results);
+            }
+        });
+});
+
+app.post('/api/delete/product', checkAdmin, (req, res) => {
+    const product_id = req.body.product_id;
+    connection.query(
+        `DELETE FROM products WHERE id = ${product_id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/create/product', checkAdmin, (req, res) => {
+    const product_item = req.body;
+    connection.query(
+        `INSERT INTO products 
+        VALUES(NULL,'${product_item.name}','${product_item.descriotion}','${product_item.qty}','${product_item.price}','${product_item.cost}',
+        '${product_item.discount}','${product_item.size}','${product_item.category}','${product_item.style}','${product_item.subcategory}','${product_item.condition}','${product_item.image_name}');`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/product', checkAdmin, (req, res) => {
+    const product_item = req.body;
+    console.log(product_item);
+    connection.query(
+        `UPDATE products SET product = "${product_item.name}", description = "${product_item.descrition}",
+        qty = '${product_item.qty}',price = '${product_item.price}',cost='${product_item.cost}',
+        discount = '${product_item.discount}',size_id='${product_item.size}',category_id='${product_item.category}',
+        style_id='${product_item.style}',subcategory_id='${product_item.subcategory}',
+        condition_id='${product_item.condition}',image='${product_item.image_name}' 
+        WHERE id = ${product_item.id};`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.get('/search/product', (req, res) => {
+    const product_name = req.query.searchname;
+    connection.query(`
+        select * from products
+        where product like "${product_name}%";`
+        , (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            } else {
+                res.status(200).json(results);
+            }
+        });
+});
 
 
 
@@ -469,7 +587,7 @@ app.get('/api/list/InvoiceDetail', checkAdmin, (req, res) => {
 // User Page
 app.get('/api/list/alluser', checkAdmin, (req, res) => {
     connection.query(`
-        SELECT * FROM users;
+        SELECT * FROM users ORDER BY users.id ASC;
         `, (err, results) => {
         if (err) {
             console.error(err);

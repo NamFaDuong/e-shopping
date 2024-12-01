@@ -101,19 +101,23 @@
         <div class="login show-login" id="login">
             <h2 class="login__title-center">Login</h2>
             <form action="/login" method="post" class="login__form grid">
+
                 <div class="login__content">
                     <label for="email" class="login__label">Email</label>
                     <input type="email" name="email" id="email" class="login__input">
                 </div>
+
                 <%if(locals.error){%>
                     <span class="error" style="font-size: 12px;color: red;">
                         <%= error.erroruser %>
                     </span>
                     <% } %>
+
                         <div class="login__content">
                             <label for="password" class="login__label">Password</label>
                             <input type="password" name="password" id="password" class="login__input">
                         </div>
+
                         <%if(locals.error){%>
                             <span class="error" style="font-size: 12px;color: red;">
                                 <%= error.errorpassword %>
@@ -123,7 +127,7 @@
                                     Sign in
                                 </button>
                                 <div class="" style="text-align: center;">
-                                    <p class="signin">Not a member? <a href="/registration." class=""
+                                    <p class="signin">Not a member? <a href="/registration" class=""
                                             style="color: var(--first-color);">Sign up new</a></p>
                                 </div>
             </form>

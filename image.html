@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .image-placeholder {
+      width: 150px;
+      height: 150px;
+      border: 2px dashed #ccc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .image-placeholder:hover {
+      background-color: #f0f0f0;
+    }
+
+    .image-placeholder img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .browse-button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .browse-button:hover {
+      background-color: #0056b3;
+    }
+
+    .info {
+      font-size: 12px;
+      color: #6c757d;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="image-placeholder">
+      <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
+
+    <input type="file" id="imageUpload" class="file-input">
+    <button class="browse-button" onclick="document.getElementById('imageUpload').click()">Browse</button>
+    <p class="info">Drag and drop an image here or click to upload.</p>
+    <button id="getsrc"> src</button>
+  </div>
+
+  <script>
+    const imageUpload = document.getElementById('imageUpload');
+    const uploadedImage = document.getElementById('uploadedImage');
+    const imagePlaceholder = document.querySelector('.image-placeholder');
+    const getSrcButton = document.getElementById('getsrc');
+
+    // Function to handle file upload
+    imageUpload.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        console.log(`File name: ${file.name}`); // Display file name in the console
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          uploadedImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Drag and Drop functionality
+    imagePlaceholder.addEventListener('dragover', function (event) {
+      event.preventDefault();
+      this.style.backgroundColor = '#e0e0e0';
+    });
+
+    imagePlaceholder.addEventListener('dragleave', function () {
+      this.style.backgroundColor = '';
+    });
+
+    imagePlaceholder.addEventListener('drop', function (event) {
+      event.preventDefault();
+      this.style.backgroundColor = '';
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        console.log(`File name: ${file.name}`); // Display file name in the console
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          uploadedImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+  </script>
+
+</body>
+
+</html>

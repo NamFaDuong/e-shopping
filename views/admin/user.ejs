@@ -146,7 +146,7 @@
                                                 <label for="gender" class="form-label">Role</label>
                                                 <select class="form-control" name="role" v-model="User.role" id="role">
                                                     <option value="customer">customer</option>
-                                                    <option value="Admin">Admin</option>
+                                                    <option value="admin">Admin</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -498,8 +498,9 @@
                             this.User.gender = user.gender,
                             this.User.phone = user.phone,
                             this.User.email = user.email,
-                            this.password = '',
+                            this.User.password = '',
                             this.User.address = user.address,
+                            this.User.role = user.role,
                             this.user_id = user.id,
                             this.openModel()
                     },
