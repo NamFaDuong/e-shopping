@@ -332,9 +332,8 @@
                                                     <div class="image-placeholder">
                                                         <img v-if="imageSrc" :src="imageSrc" alt="Uploaded Image">
                                                     </div>
-
                                                     <input type="file" id="imageUpload" class="file-input"
-                                                        ref="fileInput" @change="handleFileUpload">
+                                                        ref="fileInput" name="images_file" @change="handleFileUpload">
                                                     <div class="button_upload">
                                                         <button class="browse-button" type="button"
                                                             @click="triggerFileInput()">
@@ -529,7 +528,8 @@
                         this.Getsize(),
                         this.GetStyle(),
                         this.GetCondition(),
-                        this.GetSubCategory()
+                        this.GetSubCategory(),
+                        this.setDefaultFile()
                 },
                 data() {
                     return {
@@ -554,20 +554,27 @@
                             subcategory: 0,
                             style: 0,
                             condition: 0,
-                            image_name: '/img/product-1.png'
+                            image_name: null
                         },
                         product_id: null,
                         search_name: null,
                         fileName: '', // To store the file name
-                        imageSrc: ''
+                        imageSrc: '',
+                        selectedFile: null
                     };
                 },
                 methods: {
+                    async setDefaultFile() {
+                        const response = await fetch('/img/default_image.jpg'); // Replace with the actual URL
+                        const blob = await response.blob();
+                        this.selectedFile = new File([blob], 'default_image.jpg', { type: blob.type });
+                    },
                     triggerFileInput() {
                         this.$refs.fileInput.click();
                     },
                     handleFileUpload(event) {
                         const file = event.target.files[0];
+                        this.selectedFile = event.target.files[0];
                         if (file) {
                             this.fileName = file.name; // Get the file name
                             const reader = new FileReader();
@@ -719,25 +726,28 @@
                             });
                             return
                         }
-                        this.form.image_name = '/img/' + this.fileName;
-                        let currect_product = {
-                            name: this.form.name,
-                            descriotion: this.form.descriotion,
-                            qty: this.form.qty,
-                            discount: this.form.discount,
-                            cost: this.form.cost,
-                            price: this.form.price,
-                            size: this.form.size,
-                            category: this.form.category,
-                            subcategory: this.form.subcategory,
-                            style: this.form.style,
-                            condition: this.form.condition,
-                            image_name: this.form.image_name
-                        }
-                        console.log(currect_product.image_name);
+
+                        const fd = new FormData();
+                        fd.append('file', this.selectedFile, this.selectedFile.name);
+                        fd.append('name', this.form.name);
+                        fd.append('descriotion', this.form.descrition);
+                        fd.append('qty', this.form.qty);
+                        fd.append('discount', this.form.discount);
+                        fd.append('cost', this.form.cost);
+                        fd.append('price', this.form.price);
+                        fd.append('size', this.form.size);
+                        fd.append('category', this.form.category);
+                        fd.append('subcategory', this.form.subcategory);
+                        fd.append('style', this.form.style);
+                        fd.append('condition', this.form.condition);
+                        fd.append('image_name', this.selectedFile.name);
                         let vm = this;
                         $.LoadingOverlay("show");
-                        axios.post('http://localhost:3000/api/create/product', currect_product)
+                        axios.post('http://localhost:3000/api/create/product', fd, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
                             .then(function (response) {
                                 vm.GetProduct();
                                 $.LoadingOverlay("hide");
@@ -747,14 +757,17 @@
                                     showConfirmButton: false
                                 });
                                 vm.closeModel();
+                                console.log(response.data);
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                // Handle error
+                                console.error(error);
                             });
+
 
                     },
                     onEdit(product_item) {
-                        console.log(product_item)
+                        console.log(product_item);
                         this.status = 'update',
                             this.form.name = product_item.product,
                             this.form.descrition = product_item.description,
@@ -769,6 +782,7 @@
                             this.form.condition = product_item.condition_id,
                             this.form.image_name = product_item.image,
                             this.product_id = product_item.id,
+                            this.imageSrc = product_item.image,
                             this.openModel()
                     },
                     onUpdate() {
@@ -835,36 +849,43 @@
                             return
                         }
 
-                        let currect_product = {
-                            id: this.product_id,
-                            name: this.form.name,
-                            descrition: this.form.descrition,
-                            qty: this.form.qty,
-                            discount: this.form.discount,
-                            cost: this.form.cost,
-                            price: this.form.price,
-                            size: this.form.size,
-                            category: this.form.category,
-                            subcategory: this.form.subcategory,
-                            style: this.form.style,
-                            condition: this.form.condition,
-                            image_name: this.form.image_name
-                        }
+                        const fd = new FormData();
+                        fd.append('file', this.selectedFile, this.selectedFile.name);
+                        fd.append('name', this.form.name);
+                        fd.append('descrition', this.form.descrition);
+                        fd.append('qty', this.form.qty);
+                        fd.append('discount', this.form.discount);
+                        fd.append('cost', this.form.cost);
+                        fd.append('price', this.form.price);
+                        fd.append('size', this.form.size);
+                        fd.append('category', this.form.category);
+                        fd.append('subcategory', this.form.subcategory);
+                        fd.append('style', this.form.style);
+                        fd.append('condition', this.form.condition);
+                        fd.append('image_name', this.selectedFile.name);
+                        fd.append('id', this.product_id);
+
                         let vm = this;
                         $.LoadingOverlay("show");
-                        axios.post('http://localhost:3000/api/update/product', currect_product)
+                        axios.post('http://localhost:3000/api/update/product', fd, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
                             .then(function (response) {
                                 vm.GetProduct();
                                 $.LoadingOverlay("hide");
                                 Swal.fire({
                                     icon: "success",
-                                    title: "Updated Success",
+                                    title: "Order Success",
                                     showConfirmButton: false
                                 });
                                 vm.closeModel();
+                                console.log(response.data);
                             })
                             .catch(function (error) {
-                                console.log(error);
+                                // Handle error
+                                console.error(error);
                             });
                     },
                     onDetail(product_id) {

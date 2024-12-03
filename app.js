@@ -5,6 +5,18 @@ import mysql from 'mysql'
 import bcrypt, { hash } from 'bcrypt'
 import axios from 'axios';
 import cors from 'cors'
+import multer from 'multer'
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/img')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+})
+
+const upload = multer({ storage })
 
 
 // import cors from 'cors';
@@ -18,6 +30,13 @@ app.use(express.static("public"))
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+
+
+app.post('/api/picture', upload.single('file'), (req, res) => {
+    res.json(req.file);
+})
+
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -372,7 +391,12 @@ app.get('/api/filterSubcate', (req, res) => {
 
 app.get('/api/get/allproduct', (req, res) => {
     connection.query(`
-        select * from products
+        select products.id,product,products.description AS description,qty,price,cost,discount,
+        category, sub_category,condition_name,image,size_id,category_id,subcategory_id,style_id,condition_id,style_id
+        FROM products 
+        INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+        INNER JOIN conditions ON products.condition_id=conditions.id
+        INNER JOIN categories ON products.category_id=categories.id
         ;`
         , (err, results) => {
             if (err) {
@@ -384,11 +408,11 @@ app.get('/api/get/allproduct', (req, res) => {
         });
 });
 
-app.get('/api/get/product_detail', (req, res) => {
+app.get('/api/get/product_detail', checkAdmin, (req, res) => {
     const product_id = req.query.product_id_detail;
     connection.query(`
         select products.id,product,products.description AS description,qty,price,cost,discount,
-        category, sub_category,condition_name,image
+        category, sub_category,condition_name,image,size_id,category_id,subcategory_id,style_id,condition_id,style_id
         FROM products 
         INNER JOIN subcategory ON products.subcategory_id=subcategory.id
         INNER JOIN conditions ON products.condition_id=conditions.id
@@ -421,33 +445,47 @@ app.post('/api/delete/product', checkAdmin, (req, res) => {
     );
 });
 
-app.post('/api/create/product', checkAdmin, (req, res) => {
-    const product_item = req.body;
+app.post('/api/create/product', checkAdmin, upload.single('file'), (req, res) => {
+    const product_item = req.body; // Form fields
+    const uploadedFile = req.file; // Uploaded file
+
+    // Ensure file handling is correct
+    if (!uploadedFile) {
+        return res.status(400).json({ error: 'File upload failed' });
+    }
+
+    // Database query
     connection.query(
         `INSERT INTO products 
-        VALUES(NULL,'${product_item.name}','${product_item.descriotion}','${product_item.qty}','${product_item.price}','${product_item.cost}',
-        '${product_item.discount}','${product_item.size}','${product_item.category}','${product_item.style}','${product_item.subcategory}','${product_item.condition}','${product_item.image_name}');`,
-        (err, result, fields) => {
+       VALUES (NULL, '${product_item.name}', '${product_item.descriotion}', '${product_item.qty}', 
+       '${product_item.price}', '${product_item.cost}', '${product_item.discount}', 
+       '${product_item.size}', '${product_item.category}', '${product_item.style}', 
+       '${product_item.subcategory}', '${product_item.condition}', '/img/${uploadedFile.filename}');`,
+        (err, result) => {
             if (err) {
                 console.error(err);
                 res.status(500).json({ error: 'Database query error' });
-            }
-            else {
+            } else {
                 res.status(200).json(result);
             }
         }
     );
 });
 
-app.post('/api/update/product', checkAdmin, (req, res) => {
-    const product_item = req.body;
-    console.log(product_item);
+app.post('/api/update/product', checkAdmin, upload.single('file'), (req, res) => {
+    const product_item = req.body; // Form fields
+    const uploadedFile = req.file; // Uploaded file
+
+    // Ensure file handling is correct
+    if (!uploadedFile) {
+        return res.status(400).json({ error: 'File upload failed' });
+    }
     connection.query(
         `UPDATE products SET product = "${product_item.name}", description = "${product_item.descrition}",
         qty = '${product_item.qty}',price = '${product_item.price}',cost='${product_item.cost}',
         discount = '${product_item.discount}',size_id='${product_item.size}',category_id='${product_item.category}',
         style_id='${product_item.style}',subcategory_id='${product_item.subcategory}',
-        condition_id='${product_item.condition}',image='${product_item.image_name}' 
+        condition_id='${product_item.condition}',image='/img/${product_item.image_name}' 
         WHERE id = ${product_item.id};`,
         (err, result, fields) => {
             if (err) {
@@ -464,7 +502,12 @@ app.post('/api/update/product', checkAdmin, (req, res) => {
 app.get('/search/product', (req, res) => {
     const product_name = req.query.searchname;
     connection.query(`
-        select * from products
+        select products.id,product,products.description AS description,qty,price,cost,discount,
+        category, sub_category,condition_name,image,size_id,category_id,subcategory_id,style_id,condition_id,style_id
+        FROM products 
+        INNER JOIN subcategory ON products.subcategory_id=subcategory.id
+        INNER JOIN conditions ON products.condition_id=conditions.id
+        INNER JOIN categories ON products.category_id=categories.id
         where product like "${product_name}%";`
         , (err, results) => {
             if (err) {
