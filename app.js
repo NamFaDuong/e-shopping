@@ -1,11 +1,13 @@
 import dotenv from 'dotenv';
-import express, { query } from 'express'
+import express, { query } from 'express';
 import bodyParser from 'body-parser';
-import mysql from 'mysql'
-import bcrypt, { hash } from 'bcrypt'
+import mysql from 'mysql';
+import bcrypt, { hash } from 'bcrypt';
 import axios from 'axios';
-import cors from 'cors'
-import multer from 'multer'
+import cors from 'cors';
+import multer from 'multer';
+import Stripe from 'stripe';
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -26,12 +28,42 @@ const app = express();
 app.use(cors());
 const saltRound = 10;
 app.use(express.static("public"))
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.get("/payment", (req, res) => {
+    global.user = 'Guests';
+    res.render("../views/payment.ejs", { stripePublicKey: process.env.STRIPE_PUPLISH })
+});
 
+// Create Stripe Checkout Session
+app.post('/create-checkout-session', async (req, res) => {
+    const { amount, currency } = req.body;
 
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: { name: 'Sample Product' },
+                        unit_amount: 100, // $50.00 in cents
+                    },
+                    quantity: 1,
+                },
+            ],
+            success_url: `${req.headers.origin}/success`,
+            cancel_url: `${req.headers.origin}/cancel`,
+        });
+
+        res.json({ url: session.url });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
 
 app.post('/api/picture', upload.single('file'), (req, res) => {
     res.json(req.file);
@@ -55,6 +87,7 @@ connection.connect(err => {
 
 global.userId = 0;
 global.user = 'Guests';
+
 
 app.get("/login", (req, res) => {
     global.user = 'Guests';
@@ -561,11 +594,11 @@ app.get('/api/count/income', checkAdmin, (req, res) => {
 
 
 //Invoice
-
 app.get('/api/list/invoice', checkAdmin, (req, res) => {
     connection.query(`
         SELECT Invoice_id,users.email as email,Total_amount,
-        DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime
+        DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
+        status_order
         FROM invoice INNER JOIN users ON invoice.user_id = users.id
         ORDER BY invoice_id DESC LIMIT 5;
         `, (err, results) => {
@@ -581,7 +614,7 @@ app.get('/api/list/invoice', checkAdmin, (req, res) => {
 app.get('/api/list/allinvoice', checkAdmin, (req, res) => {
     connection.query(`
         SELECT Invoice_id,DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
-        Total_amount, discount
+        Total_amount, discount,status_order
         FROM invoice
         order by invoice_id desc;
         `, (err, results) => {
@@ -596,9 +629,8 @@ app.get('/api/list/allinvoice', checkAdmin, (req, res) => {
 
 app.get('/api/list/searchInvoiceID', checkAdmin, (req, res) => {
     const invoice_id = req.query.invoice_id;
-    console.log(invoice_id);
     connection.query(`
-        SELECT * FROM invoice where invoice_id = ${invoice_id} order by invoice_id desc
+        SELECT * FROM invoice where invoice_id like '${invoice_id}%' order by invoice_id desc
         `, (err, results) => {
         if (err) {
             console.error(err);
@@ -614,8 +646,7 @@ app.get('/api/list/InvoiceDetail', checkAdmin, (req, res) => {
     connection.query(`
         SELECT products.id as product_id,product,invoice_detail.qty as order_qty 
         FROM invoice_detail INNER JOIN products ON invoice_detail.product_id=products.id
-        WHERE Invoice_id = ${invoice_id}
-        ;
+        WHERE Invoice_id = ${invoice_id};
         `, (err, results) => {
         if (err) {
             console.error(err);
@@ -626,6 +657,85 @@ app.get('/api/list/InvoiceDetail', checkAdmin, (req, res) => {
     });
 });
 
+app.post('/api/update/invoice/todelivery', checkAdmin, (req, res) => {
+    const invoice = req.body;
+    connection.query(
+        `Update invoice set status_order = 'Delivery' where Invoice_id = ${invoice.id}`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.post('/api/update/invoice/tofinish', checkAdmin, (req, res) => {
+    const invoice = req.body;
+    connection.query(
+        `Update invoice set status_order = 'Finish' where Invoice_id = ${invoice.id}`,
+        (err, result, fields) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Database query error' });
+            }
+            else {
+                res.status(200).json(result);
+            }
+        }
+    );
+});
+
+app.get('/api/prepare/invoice', (req, res) => {
+    connection.query(`
+        SELECT Invoice_id,DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
+        Total_amount, discount,status_order
+        FROM invoice
+        where status_order like 'Prepare';
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/delivery/invoice', (req, res) => {
+    connection.query(`
+        SELECT Invoice_id,DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
+        Total_amount, discount,status_order
+        FROM invoice
+        where status_order like 'Delivery';
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
+app.get('/api/finish/invoice', (req, res) => {
+    connection.query(`
+        SELECT Invoice_id,DATE_FORMAT(transaction_datetime, '%Y-%m-%d %H:%i:%s') AS formatted_datetime,
+        Total_amount, discount,status_order
+        FROM invoice
+        where status_order like 'Finish';
+        `, (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Database query error' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
 
 // User Page
 app.get('/api/list/alluser', checkAdmin, (req, res) => {
@@ -1065,57 +1175,71 @@ const sendMessage = async (message) => {
 };
 
 
+
+
 //Payment with data
-app.post('/api/payment', (req, res) => {
-    const cart_list = req.body.cart_list;
-    const total_price = req.body.total_price.toFixed(2);
-    const discount = req.body.discount;
+app.post('/api/payment', async (req, res) => {
+    try {
+        const cart_list = req.body.cart_list;
+        const total_price = req.body.total_price;
+        const discount = req.body.discount;
 
-
-    const productDetails = cart_list.map((item, index) => `
-        Product ID: ${item.product_id}
-        Product Name: ${item.name}
-        Product Qty: ${item.qty}
+        const productDetails = cart_list.map((item, index) => ` 
+            Product ID: ${item.product_id}
+            Product Name: ${item.name}
+            Product Qty: ${item.qty}
+            Product Price: ${item.price}
         `).join('\n');
 
-    let date_time = new Date();
-    let datetime = date_time.getFullYear() + "-" + ("0" + (date_time.getMonth() + 1)).slice(-2) + "-" + ("0" + date_time.getDate()).slice(-2) + " " + date_time.getHours() + ":" + date_time.getMinutes() + ":" + date_time.getSeconds();
+        let date_time = new Date();
+        let datetime = `${date_time.getFullYear()}-${("0" + (date_time.getMonth() + 1)).slice(-2)}-${("0" + date_time.getDate()).slice(-2)} ${date_time.getHours()}:${date_time.getMinutes()}:${date_time.getSeconds()}`;
 
-    const message = `🔔New Confirm information🔔
-Email  :   ${global.user}
-Product information    
-----------------------------------
-    ${productDetails}
-----------------------------------
-Order Date 📅: ${datetime}
-Discount: %${discount}
-Total Price 🤑: $${total_price}
-    `
+        const message = `🔔New Confirm information🔔
+            Email  :   ${global.user}
+            Product information    
+            ----------------------------------
+            ${productDetails}
+            ----------------------------------
+            Order Date 📅: ${datetime}
+            Discount: %${discount}
+            Total Price 🤑: $${total_price}
+        `;
 
-    sendMessage(message).then(() => {
-        res.send('Message sent to Telegram!');
-    }).catch((err) => {
-        res.status(500).send('Error sending message');
-    });
+        // Send message and wait for it to complete
+        const messageSent = await sendMessage(message);
 
-    Invoice(total_price, discount, datetime, (err, insertId) => {
-        if (err) {
-            console.error('Error inserting invoice:', err);
-        } else {
+
+        // Handle the invoice and other updates after sending message
+        Invoice(total_price, discount, datetime, (err, insertId) => {
+            if (err) {
+                console.error('Error inserting invoice:', err);
+                return res.status(500).json({ success: false, message: 'Error processing the invoice.' });
+            }
+            // Call other necessary functions
             InvoiceDetail(cart_list, insertId);
             update_Stock(cart_list);
-        }
-    });
+        });
 
+        // Send success response after everything is done
+        res.json({
+            success: true,
+            message: 'Your payment was successful!',
+        });
 
-
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Payment processing failed. Please try again.',
+        });
+    }
 });
 
+
 function Invoice(total_price, discount, datetime, callback) {
-    console.log(global.userId);
     try {
         connection.query(
-            `INSERT INTO invoice VALUES(NULL,${total_price},'${datetime}',${discount},${global.userId});`,
+            `INSERT INTO invoice VALUES(NULL,${total_price},'${datetime}',${discount},${global.userId},'Prepare');`,
             function (err, result) {
                 if (err) {
                     callback(err, null); // Pass error to the callback
@@ -1143,6 +1267,7 @@ function InvoiceDetail(cart_list, insertId) {
         console.log(err);
     }
 };
+
 function update_Stock(cart_list) {
     try {
         cart_list.forEach(product => {
@@ -1185,6 +1310,8 @@ app.post('/contact', (req, res) => {
     });
 
 });
+
+
 
 
 

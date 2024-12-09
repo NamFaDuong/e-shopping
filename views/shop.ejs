@@ -66,7 +66,7 @@
 
                     <div class="paymentbutton" style="display: block; text-align: end;padding-top: 1rem;"
                         v-if="count_cartlist !=0">
-                        <a href="#" type="button" class="button" @click="payment()">Payment</a>
+                        <button class="button" @click="payment();">Order now</button>
                     </div>
                 </div>
 
@@ -595,7 +595,8 @@
                             },
                             delete_item(index_item) {
                                 this.cart_list.splice(index_item, 1);
-                                vm.calculate_price();
+                                this.calculate_price();
+                                this.count_cartlist = this.cart_list.length;
                             },
                             calculate_price() {
                                 this.total_price = 0;
@@ -614,29 +615,45 @@
                                 this.return_price = 0
                                 this.return_price = this.payment_amount - this.grand_total
                             },
-                            payment() {
-                                if (this.cart_list.length != 0) {
-                                    console.log(this.payment_amount)
-                                    console.log(this.grand_total.toFixed(2))
+                            async payment() {
+                                if (this.cart_list.length !== 0) {
 
                                     if (parseFloat(this.payment_amount) >= parseFloat(this.grand_total.toFixed(2))) {
                                         try {
-                                            const response = axios.post('http://localhost:3000/api/payment', {
+                                            // Await the response from the API call
+                                            const response = await axios.post('http://localhost:3000/api/payment', {
                                                 cart_list: this.cart_list,
                                                 total_price: this.total_price,
-                                                discount: this.promotion
+                                                discount: this.promotion,
                                             });
-                                            // Handle the response from Node.js
-                                            this.responseMessage = response.data;
-                                            Swal.fire({
-                                                icon: "success",
-                                                title: "Order Success",
-                                                showConfirmButton: false
-                                            });
-                                            this.clearInfor();
 
+                                            // Check if the API returned a success message
+                                            if (response.data.success) {
+                                                // Show success message
+                                                this.responseMessage = response.data.message;
+                                                Swal.fire({
+                                                    icon: "success",
+                                                    title: "Order Success",
+                                                    text: response.data.message,  // Optional: Show a custom success message
+                                                    showConfirmButton: false,
+                                                    timer: 2000, // Optional: Auto close after 2 seconds
+                                                });
+                                                this.clearInfor();
+                                            } else {
+                                                // If the success flag is not present or false
+                                                Swal.fire({
+                                                    icon: "error",
+                                                    title: "Payment Failed",
+                                                    text: response.data.message || 'Something went wrong. Please try again.',
+                                                });
+                                            }
                                         } catch (error) {
                                             console.error('There was an error!', error);
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Payment Error",
+                                                text: "There was an error processing your payment. Please try again later.",
+                                            });
                                         }
                                     } else {
                                         Swal.fire({
@@ -644,8 +661,14 @@
                                             title: "Error",
                                             text: "Please add more money",
                                         });
-                                        return
+                                        return;
                                     }
+                                } else {
+                                    Swal.fire({
+                                        icon: "warning",
+                                        title: "Cart is empty",
+                                        text: "Please add items to your cart before proceeding.",
+                                    });
                                 }
                             },
                         },

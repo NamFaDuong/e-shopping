@@ -25,7 +25,7 @@
             <ul class="navbar-nav ml-auto">
                 <!-- Navbar Search -->
                 <li class="nav-item">
-                    
+
                     <div class="navbar-search-block">
                         <form class="form-inline">
                             <div class="input-group input-group-sm">
@@ -149,15 +149,38 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="search_bar" style="display: flex" id="search-bar">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="search_by_id"
-                                                placeholder="Search Invoice number" v-model="invoice_id">
+                                    <div class="search_bar" id="search-bar">
+                                        <div class="form-group" style="display: flex;">
+                                            <div class="form">
+                                                <input type="text" class="form-control" id="search_by_id"
+                                                    placeholder="Search Invoice number" v-model="invoice_id"
+                                                    @input="getFilterbyInvoiceID()">
+                                            </div>
 
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-primary ml-2" @click="getFilterbyInvoiceID()">Search
-                                                by ID</button>
+                                            <div class="form-check form-check-inline" style="padding-left: 10px;">
+                                                <input class="form-check-input" type="radio" id="all" name="invoice"
+                                                    value="form-check-input" checked @click="InvoiceList()">
+                                                <label class="form-check-label" for="all">All</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline" style="padding-left: 10px;">
+                                                <input class="form-check-input" type="radio" id="prepare" name="invoice"
+                                                    value="form-check-input" @click="onPrepare()">
+                                                <label class="form-check-label" for="prepare">Prepare</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="delivery"
+                                                    name="invoice" value="form-check-input" @click="onDelivery()">
+                                                <label class="form-check-label" for="delivery">Delivery</label>
+                                            </div>
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" id="finish" name="invoice"
+                                                    value="form-check-input" @click="onFinish()">
+                                                <label class="form-check-label" for="finish">Finish</label>
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -189,9 +212,25 @@
                                                         </button>
                                                     </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-success mr-1" disabled>
-                                                            Finish
-                                                        </button>
+                                                        <div v-if="item.status_order == 'Prepare'">
+                                                            <button type="button" class="btn btn-primary mr-1"
+                                                                @click="update_status_to_Delivery(item.Invoice_id)">
+                                                                {{ item.status_order }}
+                                                            </button>
+                                                        </div>
+
+                                                        <div v-if="item.status_order == 'Delivery'">
+                                                            <button type="button" class="btn btn-danger mr-1"
+                                                                @click="update_status_to_Finish(item.Invoice_id)">
+                                                                {{ item.status_order }}
+                                                            </button>
+                                                        </div>
+
+                                                        <div v-if="item.status_order == 'Finish'">
+                                                            <button type="button" class="btn btn-success mr-1" disabled>
+                                                                {{ item.status_order }}
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -238,8 +277,7 @@
                     },
                     closeInvoiceDetail() {
                         $('#invoices_detail').modal('hide'),
-                            this.invoice_id = '',
-                            this.InvoiceList()
+                            this.invoice_id = ''
                     },
                     InvoiceList() {
                         $.LoadingOverlay("show");
@@ -269,7 +307,7 @@
                                     return response.json();
                                 })
                                 .then(data => {
-                                    this.invoice_detail = data;
+                                    this.Invoice_list = data;
                                     $.LoadingOverlay("hide");
                                 })
                                 .catch(error => {
@@ -298,7 +336,99 @@
                             .catch(error => {
                                 console.error('Error fetching data:', error);
                             });
-
+                    },
+                    update_status_to_Delivery(Invoice_id) {
+                        let invoice = {
+                            'id': Invoice_id
+                        }
+                        let vm = this;
+                        $.LoadingOverlay("show");
+                        axios.post('http://localhost:3000/api/update/invoice/todelivery', invoice)
+                            .then(function (response) {
+                                vm.InvoiceList();
+                                $.LoadingOverlay("hide");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Updated Success",
+                                    showConfirmButton: false
+                                });
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        window.location.reload();
+                    },
+                    update_status_to_Finish(Invoice_id) {
+                        let invoice = {
+                            'id': Invoice_id
+                        }
+                        let vm = this;
+                        $.LoadingOverlay("show");
+                        axios.post('http://localhost:3000/api/update/invoice/tofinish', invoice)
+                            .then(function (response) {
+                                vm.InvoiceList();
+                                $.LoadingOverlay("hide");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Updated Success",
+                                    showConfirmButton: false
+                                });
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        window.location.reload();
+                    },
+                    onPrepare() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/prepare/invoice')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Invoice_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                    onDelivery() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/delivery/invoice')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Invoice_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
+                    },
+                    onFinish() {
+                        $.LoadingOverlay("show");
+                        fetch('http://localhost:3000/api/finish/invoice')
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                this.Invoice_list = data;
+                                $.LoadingOverlay("hide");
+                            })
+                            .catch(error => {
+                                console.error('Error fetching data:', error);
+                            });
                     }
                 },
             }).mount('#app');
